@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    文章详情
+{% endblock title %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <h1 class="col-12 mt-4 mb-4">{{ blog.title }}</h1>
+            <div class="col-12 alert alert-success">作者：{{ blog.author }}</div>
+            <div class="col-12">
+                <p>{{ blog.body|safe }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
