@@ -12,17 +12,18 @@ def blog_list(request):
     return render(request, 'blog/list.html', context)
 
 
-def blog_detail(request, id):
-    blog = BlogPost.objects.get(id = id)
+def blog_detail(request, blog_id):
+    blog = BlogPost.objects.get(id=blog_id)
     blog.body = markdown.markdown(
         blog.body,
-        extensions = [
+        extensions=[
             'markdown.extensions.extra',
             'markdown.extensions.codehilite',
         ]
     )
     context = {'blog': blog}
     return render(request, 'blog/detail.html', context)
+
 
 def blog_create(request):
     if request.method == 'POST':
@@ -39,3 +40,11 @@ def blog_create(request):
         context = {'blog_post_form': blog_post_form}
         return render(request, 'blog/create.html', context)
 
+
+def blog_delete(request, blog_id):
+    if request.method == 'POST':
+        blog = BlogPost.objects.get(id=blog_id)
+        blog.delete()
+        return redirect('blog:blog_list')
+    else:
+        return HttpResponse("仅允许post请求")
