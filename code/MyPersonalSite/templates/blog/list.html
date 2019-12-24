@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    首页
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-2">
+
+        {% for blog in blogs %}
+        <div class="col-4 mb-4">
+            <div class="card h-100">
+                <h4 class="card-header">{{ blog.title }}</h4>
+                <div class="card-body">
+                    <p class="card-text">{{ blog.body|slice:'100' }}...</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'blog:blog_detail' blog.id %}" class="btn btn-primary">阅读本文</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock content %}
