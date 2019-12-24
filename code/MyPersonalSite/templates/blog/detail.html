@@ -19,6 +19,7 @@
                     {% csrf_token %}
                     <button type="submit">发送</button>
                 </form>
+                <a href="{% url 'blog:blog_update' blog.id %}">修改文章</a>
             </div>
             <div class="col-12">
                 <p>{{ blog.body|safe }}</p>
