@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8eb28f54-0603-40e0-a4cc-003d7d26c295" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/MyPersonalSite/templates/user/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/templates/user/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyPersonalSite/user/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/user/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyPersonalSite/blog/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/blog/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyPersonalSite/blog/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/blog/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyPersonalSite/templates/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/templates/header.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MyPersonalSite/user/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/user/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MyPersonalSite/user/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/user/views.py" afterDir="false" />
     </list>
@@ -18,8 +20,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="12" column="8" selection-start-line="12" selection-start-column="8" selection-end-line="12" selection-end-column="8" />
+            <state relative-caret-position="485">
+              <caret line="67" column="9" lean-forward="true" selection-start-line="67" selection-start-column="9" selection-end-line="67" selection-end-column="9" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -27,20 +29,14 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/user/register.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="16" column="22" lean-forward="true" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/user/login.html">
+        <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/header.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="8" column="45" selection-start-line="8" selection-start-column="45" selection-end-line="8" selection-end-column="45" />
+            <state relative-caret-position="255">
+              <caret line="36" column="37" selection-start-line="36" selection-start-column="37" selection-end-line="36" selection-end-column="37" />
+              <folding>
+                <element signature="n#style#0;n#form#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -48,8 +44,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="9" column="65" selection-start-line="9" selection-start-column="65" selection-end-line="9" selection-end-column="65" />
+            <state relative-caret-position="288">
+              <caret line="12" column="38" lean-forward="true" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
               <folding>
                 <element signature="e#50#78#0" expanded="true" />
               </folding>
@@ -57,13 +53,13 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/forms.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/MyPersonalSite/blog/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="18" column="37" selection-start-line="18" selection-start-column="37" selection-end-line="18" selection-end-column="37" />
+            <state relative-caret-position="48">
+              <caret line="15" column="37" selection-start-line="15" selection-start-column="37" selection-end-line="15" selection-end-column="37" />
               <folding>
-                <element signature="e#50#74#0" expanded="true" />
+                <element signature="e#0#45#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -75,8 +71,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -93,20 +89,21 @@
         <option value="$PROJECT_DIR$/MyPersonalSite/blog/models.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/footer.html" />
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/base.html" />
-        <option value="$PROJECT_DIR$/MyPersonalSite/blog/urls.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/blog/update.html" />
-        <option value="$PROJECT_DIR$/MyPersonalSite/blog/views.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/blog/create.html" />
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/blog/detail.html" />
         <option value="$PROJECT_DIR$/MyPersonalSite/blog/forms.py" />
-        <option value="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings.py" />
-        <option value="$PROJECT_DIR$/MyPersonalSite/templates/header.html" />
         <option value="$PROJECT_DIR$/MyPersonalSite/user/forms.py" />
-        <option value="$PROJECT_DIR$/MyPersonalSite/user/views.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/user/login.html" />
-        <option value="$PROJECT_DIR$/MyPersonalSite/user/urls.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/user/register.html" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/views.py" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/blog/urls.py" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/blog/views.py" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/user/views.py" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/templates/header.html" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/user/urls.py" />
       </list>
     </option>
   </component>
@@ -148,13 +145,6 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="MyPersonalSite" type="462c0819:PsiDirectoryNode" />
               <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="src" type="b2602c69:ProjectViewProjectNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="MyPersonalSite" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="user" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="src" type="b2602c69:ProjectViewProjectNode" />
@@ -208,12 +198,12 @@
       <workItem from="1577087288136" duration="6225000" />
       <workItem from="1577099241514" duration="1377000" />
       <workItem from="1577181202935" duration="3680000" />
-      <workItem from="1577254080382" duration="3497000" />
+      <workItem from="1577254080382" duration="5498000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14779000" />
+    <option name="totallyTimeSpent" value="16780000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
@@ -331,26 +321,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/blog/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="38" column="39" selection-start-line="38" selection-start-column="39" selection-end-line="38" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#45#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/blog/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="14" column="1" lean-forward="true" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
-          <folding>
-            <element signature="e#50#78#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="367">
@@ -362,23 +332,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="86" column="4" selection-start-line="86" selection-start-column="4" selection-end-line="86" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/header.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="18" column="73" selection-start-line="18" selection-start-column="73" selection-end-line="18" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="389">
-          <caret line="22" column="58" selection-start-line="22" selection-start-column="58" selection-end-line="22" selection-end-column="58" />
-          <folding>
-            <element signature="e#638#670#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -399,16 +352,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="18" column="37" selection-start-line="18" selection-start-column="37" selection-end-line="18" selection-end-column="37" />
-          <folding>
-            <element signature="e#50#74#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/user/login.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="192">
@@ -416,10 +359,64 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/urls.py">
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/user/register.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="16" column="22" lean-forward="true" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="552">
+          <caret line="23" column="6" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
+          <folding>
+            <element signature="e#50#74#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="23" column="47" lean-forward="true" selection-start-line="23" selection-start-column="47" selection-end-line="23" selection-end-column="47" />
+          <folding>
+            <element signature="e#638#670#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="6" column="37" lean-forward="true" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/blog/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
-          <caret line="9" column="65" selection-start-line="9" selection-start-column="65" selection-end-line="9" selection-end-column="65" />
+          <caret line="9" column="28" selection-start-line="9" selection-start-column="28" selection-end-line="9" selection-end-column="28" />
+          <folding>
+            <element signature="e#50#78#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/header.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="36" column="37" selection-start-line="36" selection-start-column="37" selection-end-line="36" selection-end-column="37" />
+          <folding>
+            <element signature="n#style#0;n#form#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="12" column="38" lean-forward="true" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
           <folding>
             <element signature="e#50#78#0" expanded="true" />
           </folding>
@@ -428,18 +425,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="12" column="8" selection-start-line="12" selection-start-column="8" selection-end-line="12" selection-end-column="8" />
+        <state relative-caret-position="485">
+          <caret line="67" column="9" lean-forward="true" selection-start-line="67" selection-start-column="9" selection-end-line="67" selection-end-column="9" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/user/register.html">
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/blog/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="22" lean-forward="true" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+        <state relative-caret-position="48">
+          <caret line="15" column="37" selection-start-line="15" selection-start-column="37" selection-end-line="15" selection-end-column="37" />
+          <folding>
+            <element signature="e#0#45#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

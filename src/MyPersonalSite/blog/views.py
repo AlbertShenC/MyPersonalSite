@@ -12,6 +12,10 @@ def blog_list(request):
     return render(request, 'blog/list.html', context)
 
 
+def blog_main(request):
+    return redirect('blog:blog_list')
+
+
 def blog_detail(request, blog_id):
     blog = BlogPost.objects.get(id=blog_id)
     blog.body = markdown.markdown(
