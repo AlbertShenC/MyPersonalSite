@@ -2,12 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8eb28f54-0603-40e0-a4cc-003d7d26c295" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings_example.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyPersonalSite/blog/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/blog/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyPersonalSite/blog/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/blog/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyPersonalSite/templates/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/templates/header.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyPersonalSite/user/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/user/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyPersonalSite/user/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/user/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyPersonalSite/templates/user/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/MyPersonalSite/templates/user/login.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,49 +17,31 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/views.py">
+        <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="485">
-              <caret line="67" column="9" lean-forward="true" selection-start-line="67" selection-start-column="9" selection-end-line="67" selection-end-column="9" />
+            <state relative-caret-position="768">
+              <caret line="32" column="56" selection-start-line="32" selection-start-column="56" selection-end-line="32" selection-end-column="56" />
               <folding>
-                <element signature="e#0#35#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/header.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="36" column="37" selection-start-line="36" selection-start-column="37" selection-end-line="36" selection-end-column="37" />
-              <folding>
-                <element signature="n#style#0;n#form#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="12" column="38" lean-forward="true" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
-              <folding>
-                <element signature="e#50#78#0" expanded="true" />
+                <element signature="e#638#670#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/MyPersonalSite/blog/views.py">
+        <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="48">
-              <caret line="15" column="37" selection-start-line="15" selection-start-column="37" selection-end-line="15" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#45#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="461">
+              <caret line="132" column="40" lean-forward="true" selection-start-line="132" selection-start-column="40" selection-end-line="132" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings_example.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="264">
+              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
             </state>
           </provider>
         </entry>
@@ -93,24 +74,25 @@
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/blog/create.html" />
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/blog/detail.html" />
         <option value="$PROJECT_DIR$/MyPersonalSite/blog/forms.py" />
-        <option value="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/user/forms.py" />
-        <option value="$PROJECT_DIR$/MyPersonalSite/templates/user/login.html" />
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/user/register.html" />
-        <option value="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/views.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/blog/urls.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/blog/views.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/user/views.py" />
         <option value="$PROJECT_DIR$/MyPersonalSite/templates/header.html" />
         <option value="$PROJECT_DIR$/MyPersonalSite/user/urls.py" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/templates/user/login.html" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings_example.py" />
+        <option value="$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="950" />
     <option name="y" value="50" />
-    <option name="width" value="979" />
+    <option name="width" value="980" />
     <option name="height" value="1040" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -144,13 +126,20 @@
               <item name="src" type="b2602c69:ProjectViewProjectNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="MyPersonalSite" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="MyPersonalSite" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="src" type="b2602c69:ProjectViewProjectNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="MyPersonalSite" type="462c0819:PsiDirectoryNode" />
               <item name="user" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="src" type="b2602c69:ProjectViewProjectNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="MyPersonalSite" type="462c0819:PsiDirectoryNode" />
+              <item name="user" type="462c0819:PsiDirectoryNode" />
+              <item name="migrations" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -199,17 +188,18 @@
       <workItem from="1577099241514" duration="1377000" />
       <workItem from="1577181202935" duration="3680000" />
       <workItem from="1577254080382" duration="5498000" />
+      <workItem from="1577337637506" duration="2680000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16780000" />
+    <option name="totallyTimeSpent" value="19460000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17895442" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18096514" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -321,13 +311,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="34" column="26" lean-forward="true" selection-start-line="34" selection-start-column="26" selection-end-line="34" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://D:/Python35/Lib/site-packages/django/contrib/auth/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -352,13 +335,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/user/login.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="8" column="45" selection-start-line="8" selection-start-column="45" selection-end-line="8" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/user/register.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
@@ -372,16 +348,6 @@
           <caret line="23" column="6" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
           <folding>
             <element signature="e#50#74#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="23" column="47" lean-forward="true" selection-start-line="23" selection-start-column="47" selection-end-line="23" selection-end-column="47" />
-          <folding>
-            <element signature="e#638#670#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -403,6 +369,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/user/login.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="22" column="16" lean-forward="true" selection-start-line="22" selection-start-column="16" selection-end-line="22" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Python35/Lib/site-packages/password_reset/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3043">
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Python35/Lib/site-packages/password_reset/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2592">
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Python35/Lib/site-packages/password_reset/templates/password_reset/recovery_email.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1608">
+          <caret line="67" column="9" selection-start-line="67" selection-start-column="9" selection-end-line="67" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/MyPersonalSite/templates/header.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -416,19 +420,9 @@
     <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
-          <caret line="12" column="38" lean-forward="true" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
+          <caret line="12" column="38" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
           <folding>
             <element signature="e#50#78#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MyPersonalSite/user/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
-          <caret line="67" column="9" lean-forward="true" selection-start-line="67" selection-start-column="9" selection-end-line="67" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -440,6 +434,30 @@
           <folding>
             <element signature="e#0#45#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="768">
+          <caret line="32" column="56" selection-start-line="32" selection-start-column="56" selection-end-line="32" selection-end-column="56" />
+          <folding>
+            <element signature="e#638#670#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings_example.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MyPersonalSite/MyPersonalSite/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="461">
+          <caret line="132" column="40" lean-forward="true" selection-start-line="132" selection-start-column="40" selection-end-line="132" selection-end-column="40" />
         </state>
       </provider>
     </entry>

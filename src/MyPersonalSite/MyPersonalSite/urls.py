@@ -28,4 +28,7 @@ urlpatterns = [
 
     # 博客
     path('blog/', include('blog.urls', namespace='blog')),
+
+    # 密码重置
+    path('password_reset/', include('password_reset.urls')),
 ]
