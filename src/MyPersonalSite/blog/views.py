@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import BlogPostForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from .forms import BlogPostForm
 from .models import *
 import markdown
 
@@ -29,12 +30,13 @@ def blog_detail(request, blog_id):
     return render(request, 'blog/detail.html', context)
 
 
+@login_required(login_url='/user/login/')
 def blog_create(request):
     if request.method == 'POST':
         blog_post_form = BlogPostForm(data=request.POST)
         if blog_post_form.is_valid():
-            new_blog = blog_post_form.save(commit = False)
-            new_blog.author = User.objects.get(id = 1)
+            new_blog = blog_post_form.save(commit=False)
+            new_blog.author = User.objects.get(id=request.user.id)
             new_blog.save()
             return redirect('blog:blog_list')
         else:
@@ -45,6 +47,7 @@ def blog_create(request):
         return render(request, 'blog/create.html', context)
 
 
+@login_required(login_url='/user/login/')
 def blog_update(request, blog_id):
     blog = BlogPost.objects.get(id=blog_id)
     if request.method == 'POST':
@@ -64,6 +67,7 @@ def blog_update(request, blog_id):
         return render(request, 'blog/update.html', context)
 
 
+@login_required(login_url='/user/login/')
 def blog_delete(request, blog_id):
     if request.method == 'POST':
         blog = BlogPost.objects.get(id=blog_id)
