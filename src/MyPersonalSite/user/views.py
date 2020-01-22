@@ -73,7 +73,6 @@ def user_delete(request, id):
 @login_required(login_url='/user/login/')
 def profile_edit(request, id):
     user = User.objects.get(id=id)
-    # profile = Profile.objects.get(user_id=id)
     if Profile.objects.filter(user_id=id).exists():
         profile = Profile.objects.get(user_id=id)
     else:
@@ -82,11 +81,13 @@ def profile_edit(request, id):
     if request.method == 'POST':
         if request.user != user:
             return HttpResponse('你没有权限修改此用户信息')
-        profile_form = ProfileForm(data=request.POST)
+        profile_form = ProfileForm(request.POST, request.FILES)
         if profile_form.is_valid():
             profile_cd = profile_form.cleaned_data
             profile.phone = profile_cd.get('phone')
             profile.bio = profile_cd.get('bio')
+            if 'avatar' in request.FILES:
+                profile.avatar = profile_cd.get('avatar')
             profile.save()
             return redirect('user:profile_edit', id=id)
         else:
