@@ -7,8 +7,22 @@
 
 {% block content %}
 <div class="container">
-    <div class="row mt-2">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'blog:blog_list' %}">
+                    最新
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'blog:blog_list' %}?order=total_views">
+                    最热
+                </a>
+            </li>
+        </ol>
+    </nav>
 
+    <div class="row mt-2">
         {% for blog in blogs %}
         <div class="col-4 mb-4">
             <div class="card h-100">
@@ -18,11 +32,45 @@
                 </div>
                 <div class="card-footer">
                     <a href="{% url 'blog:blog_detail' blog.id %}" class="btn btn-primary">阅读本文</a>
+                    <span>
+                        <small class="col align-self-end" style="color: gray;">
+                            浏览: {{ blog.total_views }}
+                        </small>
+                    </span>
                 </div>
             </div>
         </div>
         {% endfor %}
+    </div>
 
+    <div class="pagination row">
+        <div class="m-auto">
+            <span class="step-links">
+                {% if blogs.has_previous %}
+                    <a href="?page=1&order={{ order }}" class="btn btn-success">&laquo; 1</a>
+                        &laquo; 1
+                    </a>
+                    <span>...</span>
+                    <a href="?page={{ blogs.previous_page_number }}&order={{ order }}" class="btn btn-secondary">
+                        {{ blogs.previous_page_number }}
+                    </a>
+                {% endif %}
+
+                <span class="current btn btn-danger btn-lg">
+                    {{ blogs.number }}
+                </span>
+
+                {% if blogs.has_next %}
+                    <a href="?page={{ blogs.next_page_number }}&order={{ order }}" class="btn btn-secondary">
+                        {{ blogs.next_page_number }}
+                    </a>
+                    <span>...</span>
+                    <a href="?page={{ blogs.paginator.num_pages }}&order={{ order }}" class="btn btn-success">
+                        {{ blogs.paginator.num_pages }} &raquo;
+                    </a>
+                {% endif %}
+            </span>
+        </div>
     </div>
 </div>
 {% endblock content %}

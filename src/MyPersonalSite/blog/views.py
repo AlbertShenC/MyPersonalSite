@@ -2,14 +2,23 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from .forms import BlogPostForm
 from .models import *
 import markdown
 
 
 def blog_list(request):
-    blogs = BlogPost.objects.all()
-    context = {'blogs': blogs}
+    if request.GET.get('order') == 'total_views':
+        blog_list = BlogPost.objects.all().order_by('-total_views')
+        order = 'total_views'
+    else:
+        blog_list = BlogPost.objects.all()
+        order = 'normal'
+    paginator = Paginator(blog_list, 9)
+    page = request.GET.get('page')
+    blogs = paginator.get_page(page)
+    context = {'blogs': blogs, 'order': order}
     return render(request, 'blog/list.html', context)
 
 
@@ -19,6 +28,8 @@ def blog_main(request):
 
 def blog_detail(request, blog_id):
     blog = BlogPost.objects.get(id=blog_id)
+    blog.total_views += 1
+    blog.save(update_fields=['total_views'])
     blog.body = markdown.markdown(
         blog.body,
         extensions=[
@@ -50,6 +61,10 @@ def blog_create(request):
 @login_required(login_url='/user/login/')
 def blog_update(request, blog_id):
     blog = BlogPost.objects.get(id=blog_id)
+
+    if request.user != blog.author:
+        return HttpResponse("抱歉，你无权修改这篇文章。")
+
     if request.method == 'POST':
         blog_post_form = BlogPostForm(data=request.POST)
         if blog_post_form.is_valid():
@@ -71,6 +86,8 @@ def blog_update(request, blog_id):
 def blog_delete(request, blog_id):
     if request.method == 'POST':
         blog = BlogPost.objects.get(id=blog_id)
+        if request.user != blog.author:
+            return HttpResponse("抱歉，你无权删除这篇文章。")
         blog.delete()
         return redirect('blog:blog_list')
     else:

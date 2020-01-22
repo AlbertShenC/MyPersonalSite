@@ -11,7 +11,13 @@
         <div class="row">
             <h1 class="col-12 mt-4 mb-4">{{ blog.title }}</h1>
             <div class="col-12 alert alert-success">作者：{{ blog.author }}
-                <a href="#" onclick="confirm_delete()">删除文章</a>
+                {% if user == blog.author %}
+                    · <a href="#" onclick="confirm_delete()">删除文章</a>
+                    · <a href="{% url 'blog:blog_update' blog.id %}">修改文章</a>
+                {% endif %}
+                <div>
+                    浏览：{{ blog.total_views }}
+                </div>
                 <form style="display:none;"
                       id="delete"
                       action="{% url 'blog:blog_delete' blog.id %}"
@@ -19,7 +25,6 @@
                     {% csrf_token %}
                     <button type="submit">发送</button>
                 </form>
-                <a href="{% url 'blog:blog_update' blog.id %}">修改文章</a>
             </div>
             <div class="col-12">
                 <p>{{ blog.body|safe }}</p>
