@@ -47,14 +47,15 @@ def blog_detail(request, blog_id):
     blog = BlogPost.objects.get(id=blog_id)
     blog.total_views += 1
     blog.save(update_fields=['total_views'])
-    blog.body = markdown.markdown(
-        blog.body,
+    md = markdown.Markdown(
         extensions=[
             'markdown.extensions.extra',
             'markdown.extensions.codehilite',
+            'markdown.extensions.toc',
         ]
     )
-    context = {'blog': blog}
+    blog.body = md.convert(blog.body)
+    context = {'blog': blog, 'toc': md.toc}
     return render(request, 'blog/detail.html', context)
 
 
