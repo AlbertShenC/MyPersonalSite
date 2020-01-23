@@ -5,7 +5,6 @@
     文章详情
 {% endblock title %}
 
-
 {% block content %}
     <div class="container">
         <div class="row">
@@ -34,16 +33,11 @@
 
                 {% if user.is_authenticated %}
                     <div>
-                        <form
-                            action="{% url 'comment:post_comment' blog.id %}"
-                            method="POST"
-                        >
+                        <form action="{% url 'comment:post_comment' blog.id %}" method="POST">
                         {% csrf_token %}
                             <div class="form-group">
                                 <label for="body">
-                                    <strong>
-                                        我也要发言：
-                                    </strong>
+                                    <strong>我也要发言：</strong>
                                 </label>
                                 <textarea
                                     type="text"
