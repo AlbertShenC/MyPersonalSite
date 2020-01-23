@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from .forms import BlogPostForm
 from .models import *
+from comment.models import Comment
 import markdown
 
 
@@ -45,6 +46,7 @@ def blog_main(request):
 
 def blog_detail(request, blog_id):
     blog = BlogPost.objects.get(id=blog_id)
+    comments = Comment.objects.filter(Blog=blog_id)
     blog.total_views += 1
     blog.save(update_fields=['total_views'])
     md = markdown.Markdown(
@@ -55,7 +57,7 @@ def blog_detail(request, blog_id):
         ]
     )
     blog.body = md.convert(blog.body)
-    context = {'blog': blog, 'toc': md.toc}
+    context = {'blog': blog, 'toc': md.toc, 'comments': comments}
     return render(request, 'blog/detail.html', context)
 
 
