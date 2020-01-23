@@ -48,22 +48,51 @@
 
     <div class="row mt-2">
         {% for blog in blogs %}
-        <div class="col-4 mb-4">
-            <div class="card h-100">
-                <h4 class="card-header">{{ blog.title }}</h4>
-                <div class="card-body">
-                    <p class="card-text">{{ blog.body|slice:'100' }}...</p>
+            <div class="col-12">
+                {% if blog.column %}
+                    <button type="button"
+                        class="btn btn-sm mb-2
+                            {% if blog.column.title == '随笔' %}
+                                btn-success
+                            {% elif blog.column.title == '编程' %}
+                                btn-danger
+                            {% elif blog.column.title == '其他' %}
+                                btn-warning
+                            {% endif %}
+                        "
+                    >
+                        {{ blog.column }}
+                    </button>
+                {% endif %}
+
+                <h4>
+                    <b>
+                        <a href="{% url 'blog:blog_detail' blog.id %}"
+                           style="color: black;">
+                            {{ blog.title }}
+                        </a>
+                    </b>
+                </h4>
+
+                <div>
+                    <p style="color: gray;">
+                        {{ blog.body|slice:'100' }}...
+                    </p>
                 </div>
-                <div class="card-footer">
-                    <a href="{% url 'blog:blog_detail' blog.id %}" class="btn btn-primary">阅读本文</a>
-                    <span>
-                        <small class="col align-self-end" style="color: gray;">
-                            浏览: {{ blog.total_views }}
-                        </small>
+
+                <p>
+                    <span style="color: green;">
+                        {{ blog.total_views }} 浏览&nbsp;&nbsp;&nbsp;
                     </span>
-                </div>
+                    <span style="color: blue;">
+                        {{ blog.created|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
+                    </span>
+                    <span style="color: darkred;">
+                        {{ blog.updated|date:'Y-m-d' }} 更新
+                    </span>
+                </p>
+                <hr>
             </div>
-        </div>
         {% endfor %}
     </div>
 

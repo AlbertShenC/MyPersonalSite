@@ -68,13 +68,16 @@ def blog_create(request):
         if blog_post_form.is_valid():
             new_blog = blog_post_form.save(commit=False)
             new_blog.author = User.objects.get(id=request.user.id)
+            if request.POST['column'] != 'none':
+                new_blog.column = BlogColumn.objects.get(id=request.POST['column'])
             new_blog.save()
             return redirect('blog:blog_list')
         else:
             return HttpResponse('表单内容有误，请重新填写。')
     else:
         blog_post_form = BlogPostForm()
-        context = {'blog_post_form': blog_post_form}
+        columns = BlogColumn.objects.all()
+        context = {'blog_post_form': blog_post_form, 'columns': columns}
         return render(request, 'blog/create.html', context)
 
 

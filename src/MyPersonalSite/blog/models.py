@@ -3,6 +3,14 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
+class BlogColumn(models.Model):
+    title = models.CharField(max_length=100, blank=True)
+    created = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.title
+
+
 class BlogPost(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
@@ -10,6 +18,14 @@ class BlogPost(models.Model):
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now=True)
     total_views = models.PositiveIntegerField(default=0)
+
+    column = models.ForeignKey(
+        BlogColumn,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='blog'
+    )
 
     class Meta:
         ordering = ('-created',)
