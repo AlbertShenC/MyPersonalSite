@@ -3,22 +3,39 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.db.models import Q
 from .forms import BlogPostForm
 from .models import *
 import markdown
 
 
 def blog_list(request):
-    if request.GET.get('order') == 'total_views':
-        blog_list = BlogPost.objects.all().order_by('-total_views')
-        order = 'total_views'
+    search = request.GET.get('search')
+    order = request.GET.get('order')
+
+    if search:
+        if order == 'total_views':
+            blog_list = BlogPost.objects.filter(
+                Q(title__icontains=search) |
+                Q(body__icontains=search)
+            ).order_by('-total_views')
+        else:
+            blog_list = BlogPost.objects.filter(
+                Q(title__icontains=search) |
+                Q(body__icontains=search)
+            )
     else:
-        blog_list = BlogPost.objects.all()
-        order = 'normal'
+        search = ''
+        if order == 'total_views':
+            blog_list = BlogPost.objects.all().order_by('-total_views')
+            order = 'total_views'
+        else:
+            blog_list = BlogPost.objects.all()
+            order = 'normal'
     paginator = Paginator(blog_list, 9)
     page = request.GET.get('page')
     blogs = paginator.get_page(page)
-    context = {'blogs': blogs, 'order': order}
+    context = {'blogs': blogs, 'order': order, 'search': search}
     return render(request, 'blog/list.html', context)
 
 

@@ -10,17 +10,41 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{% url 'blog:blog_list' %}">
+                <a href="{% url 'blog:blog_list' %}?search={{ search }}">
                     最新
                 </a>
             </li>
             <li class="breadcrumb-item">
-                <a href="{% url 'blog:blog_list' %}?order=total_views">
+                <a href="{% url 'blog:blog_list' %}?order=total_views&search={{ search }}">
                     最热
                 </a>
             </li>
         </ol>
     </nav>
+
+    <div class="row">
+        <div class="col-auto mr-auto">
+            <form class="form-inline" >
+                <label class="sr-only">content</label>
+                <input type="text"
+                    class="form-control mb-2 mr-sm-2"
+                    name="search"
+                    placeholder="搜索文章..."
+                    required
+                >
+            </form>
+        </div>
+    </div>
+
+    {% if search %}
+        {% if blogs %}
+            <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+            <hr>
+        {% else %}
+            <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
+            <hr>
+        {% endif %}
+    {% endif %}
 
     <div class="row mt-2">
         {% for blog in blogs %}
@@ -47,11 +71,11 @@
         <div class="m-auto">
             <span class="step-links">
                 {% if blogs.has_previous %}
-                    <a href="?page=1&order={{ order }}" class="btn btn-success">&laquo; 1</a>
+                    <a href="?page=1&order={{ order }}&search={{ search }}" class="btn btn-success">&laquo; 1</a>
                         &laquo; 1
                     </a>
                     <span>...</span>
-                    <a href="?page={{ blogs.previous_page_number }}&order={{ order }}" class="btn btn-secondary">
+                    <a href="?page={{ blogs.previous_page_number }}&order={{ order }}&search={{ search }}" class="btn btn-secondary">
                         {{ blogs.previous_page_number }}
                     </a>
                 {% endif %}
@@ -61,11 +85,11 @@
                 </span>
 
                 {% if blogs.has_next %}
-                    <a href="?page={{ blogs.next_page_number }}&order={{ order }}" class="btn btn-secondary">
+                    <a href="?page={{ blogs.next_page_number }}&order={{ order }}&search={{ search }}" class="btn btn-secondary">
                         {{ blogs.next_page_number }}
                     </a>
                     <span>...</span>
-                    <a href="?page={{ blogs.paginator.num_pages }}&order={{ order }}" class="btn btn-success">
+                    <a href="?page={{ blogs.paginator.num_pages }}&order={{ order }}&search={{ search }}" class="btn btn-success">
                         {{ blogs.paginator.num_pages }} &raquo;
                     </a>
                 {% endif %}
