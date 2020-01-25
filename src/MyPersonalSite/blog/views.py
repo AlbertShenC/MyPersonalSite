@@ -71,6 +71,7 @@ def blog_create(request):
             if request.POST['column'] != 'none':
                 new_blog.column = BlogColumn.objects.get(id=request.POST['column'])
             new_blog.save()
+            blog_post_form.save_m2m()
             return redirect('blog:blog_list')
         else:
             return HttpResponse('表单内容有误，请重新填写。')

@@ -65,6 +65,16 @@
                     </button>
                 {% endif %}
 
+                <span>
+                    {% for tag in blog.tags.all %}
+                        <a href="#"
+                           class="badge badge-secondary"
+                        >
+                            {{ tag }}
+                        </a>
+                    {% endfor %}
+                </span>
+
                 <h4>
                     <b>
                         <a href="{% url 'blog:blog_detail' blog.id %}"

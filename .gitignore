@@ -2,9 +2,6 @@ settings.py
 media/
 .idea/
 
-migrations/*
-!migrations/__init__.py
-
 src/MyPersonalSite/blog/migrations/*
 !src/MyPersonalSite/blog/migrations/__init__.py
 

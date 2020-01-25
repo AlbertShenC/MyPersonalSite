@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from taggit.managers import TaggableManager
 
 
 class BlogColumn(models.Model):
@@ -26,6 +27,8 @@ class BlogPost(models.Model):
         on_delete=models.CASCADE,
         related_name='blog'
     )
+
+    tags = TaggableManager(blank=True)
 
     class Meta:
         ordering = ('-created',)
