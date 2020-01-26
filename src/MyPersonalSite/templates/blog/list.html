@@ -44,11 +44,21 @@
 
     <div class="row mt-2">
         {% for blog in blogs %}
-            <div class="col-12">
+
+            {% if blog.avatar %}
+                <div class="col-3">
+                    <img src="{{ blog.avatar.url }}"
+                         alt="avatar"
+                         style="max-width:100%; border-radius: 20px"
+                    >
+                </div>
+            {% endif %}
+
+            <div class="col">
                 {% if blog.column %}
                     <button type="button"
                         class="btn btn-sm mb-2
-                            {% if blog.column.title == '随笔' %}
+                            {% if blog.column.title == '随想' %}
                                 btn-success
                             {% elif blog.column.title == '编程' %}
                                 btn-danger
@@ -97,8 +107,8 @@
                         {{ blog.updated|date:'Y-m-d' }} 更新
                     </span>
                 </p>
-                <hr>
             </div>
+            <hr style="width: 100%;"/>
         {% endfor %}
     </div>
 

@@ -74,7 +74,7 @@ def blog_detail(request, blog_id):
 @login_required(login_url='/user/login/')
 def blog_create(request):
     if request.method == 'POST':
-        blog_post_form = BlogPostForm(data=request.POST)
+        blog_post_form = BlogPostForm(request.POST, request.FILES)
         if blog_post_form.is_valid():
             new_blog = blog_post_form.save(commit=False)
             new_blog.author = User.objects.get(id=request.user.id)
@@ -104,15 +104,28 @@ def blog_update(request, blog_id):
         if blog_post_form.is_valid():
             blog.title = request.POST['title']
             blog.body = request.POST['body']
+            if request.POST['column'] != 'none':
+                blog.column = BlogColumn.objects.get(id=request.POST['column'])
+            else:
+                blog.column = None
+
+            if request.FILES.get('avatar'):
+                blog.avatar = request.FILES.get('avatar')
+
+            blog.tags.set(*request.POST.get('tags').split(','), clear=True)
             blog.save()
             return redirect('blog:blog_detail', blog_id)
         else:
             return HttpResponse('表单内容有误，请重新填写。')
     else:
         blog_post_form = BlogPostForm()
+        columns = BlogColumn.objects.all()
         context = {
             'blog': blog,
-            'blog_post_form': blog_post_form}
+            'blog_post_form': blog_post_form,
+            'columns': columns,
+            'tags': ','.join([x for x in blog.tags.names()]),
+        }
         return render(request, 'blog/update.html', context)
 
 
