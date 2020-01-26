@@ -7,6 +7,7 @@ from django.db.models import Q
 from .forms import BlogPostForm
 from .models import *
 from comment.models import Comment
+from comment.forms import CommentForm
 import markdown
 
 
@@ -67,7 +68,8 @@ def blog_detail(request, blog_id):
         ]
     )
     blog.body = md.convert(blog.body)
-    context = {'blog': blog, 'toc': md.toc, 'comments': comments}
+    comment_form = CommentForm()
+    context = {'blog': blog, 'toc': md.toc, 'comments': comments, 'comment_form': comment_form}
     return render(request, 'blog/detail.html', context)
 
 
