@@ -7,36 +7,47 @@ from django.db.models import Q
 from .forms import BlogPostForm
 from .models import *
 from comment.models import Comment
+from comment.forms import CommentForm
 import markdown
 
 
 def blog_list(request):
     search = request.GET.get('search')
     order = request.GET.get('order')
+    column = request.GET.get('column')
+    tag = request.GET.get('tag')
+
+    blog_list = BlogPost.objects.all()
 
     if search:
-        if order == 'total_views':
-            blog_list = BlogPost.objects.filter(
-                Q(title__icontains=search) |
-                Q(body__icontains=search)
-            ).order_by('-total_views')
-        else:
-            blog_list = BlogPost.objects.filter(
-                Q(title__icontains=search) |
-                Q(body__icontains=search)
-            )
+        blog_list = blog_list.filter(
+            Q(title__icontains=search) |
+            Q(body__icontains=search)
+        )
     else:
         search = ''
-        if order == 'total_views':
-            blog_list = BlogPost.objects.all().order_by('-total_views')
-            order = 'total_views'
-        else:
-            blog_list = BlogPost.objects.all()
-            order = 'normal'
-    paginator = Paginator(blog_list, 9)
+
+    if column is not None and column.isdigit():
+        blog_list = blog_list.filter(column=column)
+
+    if tag and tag != 'None':
+        blog_list = blog_list.filter(tags__name__in=[tag])
+
+    if order == 'total_views':
+        blog_list = blog_list.order_by('-total_views')
+
+    paginator = Paginator(blog_list, 3)
     page = request.GET.get('page')
     blogs = paginator.get_page(page)
-    context = {'blogs': blogs, 'order': order, 'search': search}
+
+    context = {
+        'blogs': blogs,
+        'order': order,
+        'search': search,
+        'column': column,
+        'tag': tag,
+    }
+
     return render(request, 'blog/list.html', context)
 
 
@@ -57,24 +68,29 @@ def blog_detail(request, blog_id):
         ]
     )
     blog.body = md.convert(blog.body)
-    context = {'blog': blog, 'toc': md.toc, 'comments': comments}
+    comment_form = CommentForm()
+    context = {'blog': blog, 'toc': md.toc, 'comments': comments, 'comment_form': comment_form}
     return render(request, 'blog/detail.html', context)
 
 
 @login_required(login_url='/user/login/')
 def blog_create(request):
     if request.method == 'POST':
-        blog_post_form = BlogPostForm(data=request.POST)
+        blog_post_form = BlogPostForm(request.POST, request.FILES)
         if blog_post_form.is_valid():
             new_blog = blog_post_form.save(commit=False)
             new_blog.author = User.objects.get(id=request.user.id)
+            if request.POST['column'] != 'none':
+                new_blog.column = BlogColumn.objects.get(id=request.POST['column'])
             new_blog.save()
+            blog_post_form.save_m2m()
             return redirect('blog:blog_list')
         else:
             return HttpResponse('表单内容有误，请重新填写。')
     else:
         blog_post_form = BlogPostForm()
-        context = {'blog_post_form': blog_post_form}
+        columns = BlogColumn.objects.all()
+        context = {'blog_post_form': blog_post_form, 'columns': columns}
         return render(request, 'blog/create.html', context)
 
 
@@ -90,15 +106,28 @@ def blog_update(request, blog_id):
         if blog_post_form.is_valid():
             blog.title = request.POST['title']
             blog.body = request.POST['body']
+            if request.POST['column'] != 'none':
+                blog.column = BlogColumn.objects.get(id=request.POST['column'])
+            else:
+                blog.column = None
+
+            if request.FILES.get('avatar'):
+                blog.avatar = request.FILES.get('avatar')
+
+            blog.tags.set(*request.POST.get('tags').split(','), clear=True)
             blog.save()
             return redirect('blog:blog_detail', blog_id)
         else:
             return HttpResponse('表单内容有误，请重新填写。')
     else:
         blog_post_form = BlogPostForm()
+        columns = BlogColumn.objects.all()
         context = {
             'blog': blog,
-            'blog_post_form': blog_post_form}
+            'blog_post_form': blog_post_form,
+            'columns': columns,
+            'tags': ','.join([x for x in blog.tags.names()]),
+        }
         return render(request, 'blog/update.html', context)
 
 

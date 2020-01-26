@@ -1,7 +1,15 @@
 settings.py
 media/
 .idea/
-migrations/
+
+src/MyPersonalSite/blog/migrations/*
+!src/MyPersonalSite/blog/migrations/__init__.py
+
+src/MyPersonalSite/comment/migrations/*
+!src/MyPersonalSite/comment/migrations/__init__.py
+
+src/MyPersonalSite/user/migrations/*
+!src/MyPersonalSite/user/migrations/__init__.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
