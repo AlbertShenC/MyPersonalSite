@@ -13,30 +13,40 @@ import markdown
 def blog_list(request):
     search = request.GET.get('search')
     order = request.GET.get('order')
+    column = request.GET.get('column')
+    tag = request.GET.get('tag')
+
+    blog_list = BlogPost.objects.all()
 
     if search:
-        if order == 'total_views':
-            blog_list = BlogPost.objects.filter(
-                Q(title__icontains=search) |
-                Q(body__icontains=search)
-            ).order_by('-total_views')
-        else:
-            blog_list = BlogPost.objects.filter(
-                Q(title__icontains=search) |
-                Q(body__icontains=search)
-            )
+        blog_list = blog_list.filter(
+            Q(title__icontains=search) |
+            Q(body__icontains=search)
+        )
     else:
         search = ''
-        if order == 'total_views':
-            blog_list = BlogPost.objects.all().order_by('-total_views')
-            order = 'total_views'
-        else:
-            blog_list = BlogPost.objects.all()
-            order = 'normal'
-    paginator = Paginator(blog_list, 9)
+
+    if column is not None and column.isdigit():
+        blog_list = blog_list.filter(column=column)
+
+    if tag and tag != 'None':
+        blog_list = blog_list.filter(tags__name__in=[tag])
+
+    if order == 'total_views':
+        blog_list = blog_list.order_by('-total_views')
+
+    paginator = Paginator(blog_list, 3)
     page = request.GET.get('page')
     blogs = paginator.get_page(page)
-    context = {'blogs': blogs, 'order': order, 'search': search}
+
+    context = {
+        'blogs': blogs,
+        'order': order,
+        'search': search,
+        'column': column,
+        'tag': tag,
+    }
+
     return render(request, 'blog/list.html', context)
 
 
