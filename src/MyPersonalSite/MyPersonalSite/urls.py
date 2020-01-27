@@ -22,6 +22,9 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    # 个人简历
+    path('intro/', include('intro.urls', namespace='intro')),
+
     # 首页
     path('', views.main_page, name='web_main'),
 

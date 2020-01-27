@@ -41,9 +41,10 @@ INSTALLED_APPS = [
     'mptt',
     'password_reset',
     'taggit',
-    'user',
     'blog',
     'comment',
+    'intro',
+    'user',
 ]
 
 CKEDITOR_CONFIGS = {
