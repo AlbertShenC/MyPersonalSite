@@ -10,7 +10,7 @@
 
 - 依赖库
 
-  - python库：Django，markdown，Pillow，django-ckeditor，django-password-reset，django-taggit
+  - python库：Django，markdown，Pillow，django-ckeditor，django-mptt，django-password-reset，django-taggit
 
 - 运行前准备
 
