@@ -56,19 +56,10 @@
 
             <div class="col">
                 {% if blog.column %}
-                    <button type="button"
-                        class="btn btn-sm mb-2
-                            {% if blog.column.title == '随想' %}
-                                btn-success
-                            {% elif blog.column.title == '编程' %}
-                                btn-danger
-                            {% elif blog.column.title == '其他' %}
-                                btn-warning
-                            {% endif %}
-                        "
-                    >
+                    <a href="{% url 'blog:blog_list' %}?column={{ blog.column.id }}"
+                       role="button" class="btn btn-sm hvr-pop btn-outline-secondary">
                         {{ blog.column }}
-                    </button>
+                    </a>
                 {% endif %}
 
                 <span>
@@ -99,6 +90,9 @@
                 <p>
                     <span style="color: green;">
                         {{ blog.total_views }} 浏览&nbsp;&nbsp;&nbsp;
+                    </span>
+                    <span style="color: red;">
+                        {{ blog.comments.count }} 评论&nbsp;&nbsp;&nbsp;
                     </span>
                     <span style="color: blue;">
                         {{ blog.created|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
