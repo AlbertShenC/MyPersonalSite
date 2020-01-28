@@ -1,5 +1,5 @@
 /* ������ȫ��õ�Bootstrapģ�壺http://www.bootstrapmb.com   File Description: Main Css file of the template*//****************************************\01.general02.helper03.components04.menu05.home06.about07.skills08.experience-education09.portfolio10.contact11.footer12.responsive*****************************************/
-@import url("https://fonts.googleapis.com/css?family=Oswald:400,700|Roboto:400,500,700");
+@import url("./googlefonts.css");
 
 body {
     font-family: "Roboto", sans-serif;
