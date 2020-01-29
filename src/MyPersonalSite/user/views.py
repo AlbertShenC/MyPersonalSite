@@ -86,6 +86,7 @@ def profile_edit(request, id):
             profile_cd = profile_form.cleaned_data
             profile.phone = profile_cd.get('phone')
             profile.bio = profile_cd.get('bio')
+            profile.examination_number = profile_cd.get('examination_number')
             if 'avatar' in request.FILES:
                 profile.avatar = profile_cd.get('avatar')
             profile.save()
@@ -100,4 +101,3 @@ def profile_edit(request, id):
         return render(request, 'user/edit.html', context)
     else:
         return HttpResponse('请求类型不是Post或Get。')
-
