@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% load staticfiles %}
+{% block title %} 添加作业 {% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <br>
+            <form method="post" action="." enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="title">作业标题</label>
+                    <input type="text" class="form-control" id="title" name="title">
+                </div>
+
+                <div class="form-group">
+                    <label for="column">栏目</label>
+                    <select class="form-control" id="column" name="column">
+                        <option value="none">请选择栏目..</option>
+                    {% for column in columns %}
+                        <option value="{{ column.id }}">{{ column }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="instrument">作业说明</label>
+                    <input type="text" class="form-control" id="instrument" name="instrument" value="{{ homework.instrument }}">
+                </div>
+
+                <button type="submit" class="btn btn-primary">完成</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

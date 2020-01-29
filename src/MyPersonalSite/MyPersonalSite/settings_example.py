@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'blog',
     'comment',
     'intro',
+    'homework',
     'notice',
     'user',
 ]
@@ -168,7 +169,7 @@ STATICFILES_DIRS = (
 
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_HOST_USER = '851397867@qq.com'
-EMAIL_HOST_PASSWORD = 'xxxxxx'
+EMAIL_HOST_PASSWORD = 'igouijfhyxgvbfag'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = 'Albert <851397867@qq.com>'

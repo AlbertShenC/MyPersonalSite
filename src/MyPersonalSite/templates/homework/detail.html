@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    作业详情
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-9">
+                <h1 class="col-12 mt-4 mb-4">{{ homework.title }}</h1>
+                <div class="col-12 alert alert-success">说明：
+                    {% if homework.instrument %}
+                        {{ homework.instrument }}
+                    {% else %}
+                        无
+                    {% endif %}
+                    {% if user == homework.teacher %}
+                        · <a href="{% url 'homework:homework_update' homework.id %}">修改作业说明</a>
+                        · <a href="#" onclick="confirm_delete('delete')">删除此作业</a>
+                        <form style="display:none;" id="delete"
+                              action="{% url 'homework:homework_delete' homework.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit">发送</button>
+                        </form>
+                    {% endif %}
+                </div>
+
+                <div class="row mt-2">
+                    {% for question in questions %}
+                        {% if user == question.homework.teacher %}
+                            <p>答案：{{ question.answer }}</p>
+                            · <a href="{% url 'homework:update_single_choice_question' question.id %}">修改此题目</a>
+                            · <a href="#" onclick="confirm_delete('{{ question.id }}')">删除此题目</a>
+                            <form style="display:none;" id="{{ question.id }}"
+                                  action="{% url 'homework:delete_single_choice_question' question.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit">发送</button>
+                            </form>
+                        {% elif not user.is_authenticated %}
+                            <br>
+                            <p class="row justify-content-center">
+                                请<a href="{% url 'user:user_login' %}">登录</a>后答题
+                            </p>
+                            <br>
+                        {% else %}
+                            <div class="form-group">
+                                <label>答案：</label>
+                                <input type="text">
+                            </div>
+                        {% endif %}
+                        <h5 style="color: black;" class="col-12">
+                            {{ question.stem }}
+                        </h5>
+                        <div class="col-12">
+                            <p style="color: gray;">
+                                {{ question.choice_1 }}
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <p style="color: gray;">
+                                {{ question.choice_2 }}
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <p style="color: gray;">
+                                {{ question.choice_3 }}
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <p style="color: gray;">
+                                {{ question.choice_4 }}
+                            </p>
+                        </div>
+
+                        <hr style="width: 100%;"/>
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                {% if user == homework.teacher %}
+                    · <a href="{% url 'homework:create_single_choice_question' homework.id %}">添加单选题</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirm_delete(delete_ele) {
+            layer.open({
+                title: "确认删除",
+                content: "此操作不可逆，请谨慎操作",
+                yes: function(index, layero) {
+                    $('form#' + delete_ele + ' button').click();
+                    layer.close(index);
+                }
+            })
+        }
+    </script>
+{% endblock content %}

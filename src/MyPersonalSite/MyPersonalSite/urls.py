@@ -46,6 +46,9 @@ urlpatterns = [
 
     # 通知
     path('notice/', include('notice.urls', namespace='notice')),
+
+    # 答题系统
+    path('homework/', include('homework.urls', namespace='homework')),
 ]
 
 

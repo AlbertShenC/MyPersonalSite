@@ -7,6 +7,12 @@
         <div>
             <ul class="navbar-nav">
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'homework:homework_list' %}">答题系统</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'homework:homework_create' %}">新建作业</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'blog:blog_create' %}">写文章</a>
                 </li>
                 <li class="nav-item">

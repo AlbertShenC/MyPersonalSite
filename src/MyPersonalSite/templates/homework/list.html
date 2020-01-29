@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    答题系统
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+
+    <div class="row">
+        <div class="col-auto mr-auto">
+            <form class="form-inline" >
+                <label class="sr-only">content</label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="search"
+                    placeholder="搜索题目..." required>
+            </form>
+        </div>
+    </div>
+
+    {% if search %}
+        {% if homeworks %}
+            <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+            <hr>
+        {% else %}
+            <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
+            <hr>
+        {% endif %}
+    {% endif %}
+
+    <div class="row mt-2">
+        {% for homework in homeworks %}
+
+            <div class="col">
+                {% if homework.column %}
+                    <a href="{% url 'homework:homework_list' %}?column={{ homework.column.id }}"
+                       role="button" class="btn btn-sm hvr-pop btn-outline-secondary">
+                        {{ homework.column }}
+                    </a>
+                {% endif %}
+
+                <h4>
+                    <b>
+                        <a href="{% url 'homework:homework_detail' homework.id %}"
+                           style="color: black;">
+                            {{ homework.title }}
+                        </a>
+                    </b>
+                </h4>
+
+                <div>
+                    <p style="color: gray;">
+                        {{ homework.instrument|slice:'100' }}
+                    </p>
+                </div>
+
+                <p>
+                    <span style="color: blue;">
+                        {{ homework.created|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
+                    </span>
+                    <span style="color: darkred;">
+                        {{ homework.updated|date:'Y-m-d' }} 更新
+                    </span>
+                </p>
+            </div>
+            <hr style="width: 100%;"/>
+        {% endfor %}
+    </div>
+
+    <div class="pagination row">
+        <div class="m-auto">
+            <span class="step-links">
+                {% if homeworks.has_previous %}
+                    <a href="?page=1&search={{ search }}&column={{ column }}" class="btn btn-success">&laquo; 1</a>
+                        &laquo; 1
+                    </a>
+                    <span>...</span>
+                    <a href="?page={{ homeworks.previous_page_number }}&search={{ search }}&column={{ column }}" class="btn btn-secondary">
+                        {{ homeworks.previous_page_number }}
+                    </a>
+                {% endif %}
+
+                <span class="current btn btn-danger btn-lg">
+                    {{ homeworks.number }}
+                </span>
+
+                {% if homeworks.has_next %}
+                    <a href="?page={{ homeworks.next_page_number }}&search={{ search }}&column={{ column }}" class="btn btn-secondary">
+                        {{ homeworks.next_page_number }}
+                    </a>
+                    <span>...</span>
+                    <a href="?page={{ homeworks.paginator.num_pages }}&search={{ search }}&column={{ column }}" class="btn btn-success">
+                        {{ homeworks.paginator.num_pages }} &raquo;
+                    </a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+{% endblock content %}
