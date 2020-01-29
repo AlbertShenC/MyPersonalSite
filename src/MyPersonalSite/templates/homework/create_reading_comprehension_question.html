@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% load staticfiles %}
+{% block title %} 添加作业 {% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <br>
+            <form method="post" action="." enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="stem">题干</label>
+                    <input type="text" class="form-control" id="stem" name="stem">
+                </div>
+
+                <div class="form-group">
+                    <label for="choice_1">选项A</label>
+                    <input type="text" class="form-control" id="choice_1" name="choice_1">
+                </div>
+
+                <div class="form-group">
+                    <label for="choice_2">选项B</label>
+                    <input type="text" class="form-control" id="choice_2" name="choice_2">
+                </div>
+
+                <div class="form-group">
+                    <label for="choice_3">选项C</label>
+                    <input type="text" class="form-control" id="choice_3" name="choice_3">
+                </div>
+
+                <div class="form-group">
+                    <label for="choice_4">选项D</label>
+                    <input type="text" class="form-control" id="choice_4" name="choice_4">
+                </div>
+
+                <div class="form-group">
+                    <label for="answer">答案</label>
+                    <input type="text" class="form-control" id="answer" name="answer">
+                </div>
+
+                <button type="submit" class="btn btn-primary">完成</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

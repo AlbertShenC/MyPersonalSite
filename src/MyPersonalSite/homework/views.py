@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.urls import reverse
+from itertools import chain
+from operator import attrgetter
 from .models import *
 from .forms import *
 
@@ -47,7 +49,10 @@ def homework_main(request):
 
 def homework_detail(request, homework_id):
     homework = HomeworkPost.objects.get(id=homework_id)
-    questions = SingleChoiceQuestionPost.objects.filter(homework=homework_id)
+    single_choice_question = SingleChoiceQuestionPost.objects.filter(homework=homework_id)
+    reading_comprehension_quesiton = ReadingComprehensionQuestionPost.objects.filter(homework=homework_id)
+    questions = sorted(chain(single_choice_question, reading_comprehension_quesiton),
+                       key=attrgetter('number'), reverse=False)
 
     context = {
         'homework': homework,
@@ -167,3 +172,22 @@ def delete_single_choice_question(request, question_id):
         return redirect(reverse('homework:homework_detail', args=[single_choice_question.homework.id]))
     else:
         return HttpResponse("仅允许post请求")
+
+
+@login_required(login_url='/user/login/')
+def create_reading_comprehension_question(request, homework_id):
+    if request.method == 'POST':
+        reading_comprehension_question_form = ReadingComprehensionQuestionPostForm(request.POST)
+        if reading_comprehension_question_form.is_valid():
+            new_reading_comprehension_question = reading_comprehension_question_form.save(commit=False)
+            new_reading_comprehension_question.homework = HomeworkPost.objects.get(id=homework_id)
+            new_reading_comprehension_question.save()
+            return redirect(reverse('homework:homework_detail', args=[homework_id]))
+        else:
+            return HttpResponse('表单内容有误，请重新填写。')
+    else:
+        reading_comprehension_question_form = ReadingComprehensionQuestionPostForm()
+        context = {
+            'single_choice_question_form': reading_comprehension_question_form
+        }
+        return render(request, 'homework/create_reading_comprehension_question.html', context)

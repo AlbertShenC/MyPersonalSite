@@ -7,3 +7,4 @@ from .models import *
 admin.site.register(HomeworkPost)
 admin.site.register(HomeworkColumn)
 admin.site.register(SingleChoiceQuestionPost)
+admin.site.register(ReadingComprehensionQuestionPost)
