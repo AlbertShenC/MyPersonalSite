@@ -1,3 +1,6 @@
+{% load notifications_tags %}
+{% notifications_unread as unread_count %}
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="#">我的博客</a>
@@ -13,10 +16,20 @@
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if unread_count %}
+                            <svg viewBox="0 0 8 8" width="8px" height="8px">
+                                <circle cx="4" cy="4" r="4" fill="#ff6b6b"></circle>
+                            </svg>
+                        {% endif %}
                         {{ user.username }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href='{% url "user:profile_edit" user.id %}'>个人信息</a>
+                        <a class="dropdown-item" href="{% url "notice:comment_notice_list" %}">通知
+                            {% if unread_count %}
+                                <span class="badge badge-danger">{{ unread_count }}</span>
+                            {% endif %}
+                        </a>
                         <a class="dropdown-item" href='{% url "user:user_logout" %}'>退出登录</a>
                         <a class="dropdown-item" href="#" onclick="user_delete()">删除用户</a>
                     </div>

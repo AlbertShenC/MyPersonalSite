@@ -17,10 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+import notifications.urls
 from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # 个人简历
+    path('intro/', include('intro.urls', namespace='intro')),
 
     # 首页
     path('', views.main_page, name='web_main'),
@@ -36,6 +40,12 @@ urlpatterns = [
 
     # 评论
     path('comment/', include('comment.urls', namespace='comment')),
+
+    # 通知（norifications库自带）
+    path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
+
+    # 通知
+    path('notice/', include('notice.urls', namespace='notice')),
 ]
 
 

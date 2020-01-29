@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
+from notifications.signals import notify
+from django.contrib.auth.models import User
 
 from blog.models import BlogPost
 from .forms import CommentForm
@@ -25,10 +27,27 @@ def post_comment(request, blog_id, parent_comment_id=None):
                 new_comment.parent_id = parent_comment.get_root().id
                 new_comment.reply_to = parent_comment.user
                 new_comment.save()
-                return HttpResponse('200 OK')
+
+                if not parent_comment.user == new_comment.user:
+                    notify.send(
+                        request.user,
+                        recipient=parent_comment.user,
+                        verb='回复了你：' + new_comment.body[0:10] + '...',
+                        target=blog,
+                        action_object=new_comment,
+                    )
+                return JsonResponse({"code": "200 OK", "new_comment_id": new_comment.id})
 
             new_comment.save()
-            return redirect(reverse('blog:blog_detail', args=[blog_id]))
+            if not blog.author == new_comment.user:
+                notify.send(
+                    request.user,
+                    recipient=blog.author,
+                    verb='回复了你：' + new_comment.body[0:10] + '...',
+                    target=blog,
+                    action_object=new_comment,
+                )
+            return redirect(reverse('blog:blog_detail', args=[blog_id])+ '#comment_elem_' + str(new_comment.id))
         else:
             return HttpResponse("表单内容有误，请重新填写。")
     elif request.method == 'GET':

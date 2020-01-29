@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    通知
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-4 ml-4">
+        <a href="{% url "notice:comment_notice_update" %}" class="btn btn-warning" role="button">标记所有通知为已读</a>
+    </div>
+
+    <div class="row mt-2 ml-4">
+        <ul class="list-group">
+            {% for notice_unread in notices_unread %}
+                <li class="list-group-item" id="notice_link">
+                    <a href="{% url "notice:comment_notice_update" %}?blog_id={{ notice_unread.target.id }}&notice_id={{ notice_unread.id }}#comment_elem_{{ notice_unread.action_object.id }}"
+                       target="_blank"
+                    >
+                    <span style="color: #5897fb;">
+                        {{ notice_unread.actor }}
+                    </span>
+                        在 <span style="color: #01a252;">{{ notice_unread.target }}</span> {{ notice_unread.verb }}
+                    </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ notice_unread.timestamp|date:"Y/m/d H:i" }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="row mt-4 ml-4">
+        <div class="btn btn-warning">已读通知</div>
+    </div>
+
+    <div class="row mt-2 ml-4">
+        <ul class="list-group">
+            {% for notice_read in notices_read %}
+                <li class="list-group-item" id="notice_link">
+                    <a href="{% url "notice:comment_notice_update" %}?blog_id={{ notice_read.target.id }}&notice_id={{ notice_read.id }}#comment_elem_{{ notice_read.action_object.id }}"
+                       target="_blank"
+                    >
+                    <span style="color: #5897fb;">
+                        {{ notice_read.actor }}
+                    </span>
+                        在 <span style="color: #01a252;">{{ notice_read.target }}</span> {{ notice_read.verb }}
+                    </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ notice_read.timestamp|date:"Y/m/d H:i" }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+<style>
+    #notice_link a:link {
+        color: black;
+    }
+
+    #notice_link a:visited {
+        color: lightgrey;
+    }
+</style>
+{% endblock content %}

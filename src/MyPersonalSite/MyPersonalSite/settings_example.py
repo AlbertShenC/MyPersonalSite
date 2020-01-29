@@ -39,11 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ckeditor',
     'mptt',
+    'notifications',
     'password_reset',
     'taggit',
-    'user',
+
     'blog',
     'comment',
+    'intro',
+    'notice',
+    'user',
 ]
 
 CKEDITOR_CONFIGS = {
