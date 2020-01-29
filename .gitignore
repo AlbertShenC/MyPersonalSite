@@ -141,4 +141,7 @@ src/MyPersonalSite/comment/migrations/*
 src/MyPersonalSite/user/migrations/*
 !src/MyPersonalSite/user/migrations/__init__.py
 
+src/MyPersonalSite/homework/migrations/*
+!src/MyPersonalSite/homework/migrations/__init__.py
+
 !src/MyPersonalSite/static/ckeditor/ckeditor/plugins/prism/lib/
