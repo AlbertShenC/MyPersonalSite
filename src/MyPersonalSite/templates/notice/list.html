@@ -15,7 +15,7 @@
         <ul class="list-group">
             {% for notice_unread in notices_unread %}
                 <li class="list-group-item" id="notice_link">
-                    <a href="{% url "notice:comment_notice_update" %}?blog_id={{ notice_unread.target.id }}&notice_id={{ notice_unread.id }}"
+                    <a href="{% url "notice:comment_notice_update" %}?blog_id={{ notice_unread.target.id }}&notice_id={{ notice_unread.id }}#comment_elem_{{ notice_unread.action_object.id }}"
                        target="_blank"
                     >
                     <span style="color: #5897fb;">
@@ -37,7 +37,7 @@
         <ul class="list-group">
             {% for notice_read in notices_read %}
                 <li class="list-group-item" id="notice_link">
-                    <a href="{% url "notice:comment_notice_update" %}?blog_id={{ notice_read.target.id }}&notice_id={{ notice_read.id }}"
+                    <a href="{% url "notice:comment_notice_update" %}?blog_id={{ notice_read.target.id }}&notice_id={{ notice_read.id }}#comment_elem_{{ notice_read.action_object.id }}"
                        target="_blank"
                     >
                     <span style="color: #5897fb;">

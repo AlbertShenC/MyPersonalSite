@@ -64,6 +64,7 @@
                                         {% else %}
                                         col-12
                                         {% endif %}"
+                                 id="comment_elem_{{ comment.id }}"
                             >
                                 <hr>
                                 <p>
@@ -100,7 +101,7 @@
                                     </button>
                                     {% else %}
                                     <a class="btn btn-light btn-sm text-muted"
-                                       href="{% url 'user:login' %}"
+                                       href="{% url 'user:user_login' %}"
                                        >
                                         回复
                                     </a>
@@ -149,19 +150,17 @@
     </div>
 
     <script>
-    function confirm_delete() {
-        layer.open({
-            title: "确认删除",
-            content: "确认删除这篇文章吗？",
-            yes: function(index, layero) {
-                $('form#delete button').click();
-                layer.close(index);
-            }
-        })
-    }
-    </script>
+        function confirm_delete() {
+            layer.open({
+                title: "确认删除",
+                content: "确认删除这篇文章吗？",
+                yes: function(index, layero) {
+                    $('form#delete button').click();
+                    layer.close(index);
+                }
+            })
+        }
 
-    <script>
         function load_modal(blog_id, comment_id) {
             let modal_body = '#modal_body_' + comment_id;
             let modal_id = '#comment_' + comment_id;
@@ -179,6 +178,14 @@
             };
             $(modal_id).modal('show');
         }
+
+        function post_reply_and_show_it(new_comment_id) {
+            let next_url = "{% url 'blog:blog_detail' blog.id %}";
+            // 去除 url 尾部 '/' 符号
+            next_url = next_url.charAt(next_url.length - 1) == '/' ? next_url.slice(0, -1) : next_url;
+            // 刷新并定位到锚点
+            window.location.replace(next_url + "#comment_elem_" + new_comment_id);
+        };
     </script>
 
     <script src="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.js' %}"></script>
