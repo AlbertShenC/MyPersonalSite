@@ -14,6 +14,7 @@ class Profile(models.Model):
 
     is_teacher = models.BooleanField(default=False)
     is_student = models.BooleanField(default=False)
+    # 考号
     examination_number = models.CharField(max_length=10, blank=True)
 
     def __str__(self):

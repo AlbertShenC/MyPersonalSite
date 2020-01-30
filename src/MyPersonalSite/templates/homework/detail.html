@@ -27,61 +27,74 @@
                     {% endif %}
                 </div>
 
-                <div class="row mt-2">
-                    {% for question in questions %}
-                        {% if user == question.homework.teacher %}
-                            <p>答案：{{ question.answer }}</p>
-                            · <a href="{% url 'homework:update_single_choice_question' question.id %}">修改此题目</a>
-                            · <a href="#" onclick="confirm_delete('{{ question.id }}')">删除此题目</a>
-                            <form style="display:none;" id="{{ question.id }}"
-                                  action="{% url 'homework:delete_single_choice_question' question.id %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit">发送</button>
-                            </form>
-                        {% elif not user.is_authenticated %}
-                            <br>
-                            <p class="row justify-content-center">
-                                请<a href="{% url 'user:user_login' %}">登录</a>后答题
-                            </p>
-                            <br>
-                        {% else %}
-                            <div class="form-group">
-                                <label>答案：</label>
-                                <input type="text">
+                <div class="row mt-2 col-12">
+                    {% if big_questions %}
+                        <form method="post" action="." enctype="multipart/form-data" class="col-12">
+                            {% csrf_token %}
+                    {% endif %}
+                    {% for big_question in big_questions %}
+                        {% if big_question.kind == 'SingleChoice' %}
+                            {% for small_question in small_questions %}
+                                {% if small_question.big_question == big_question %}
+                                    <div class="form-group col-12">
+                                        <label for="{{ big_question.number }}" class="col-2">答案：</label>
+                                        <input type="text" class="form-control col-3" id="{{ big_question.number }}" name="{{ big_question.number }}">
+                                    </div>
+                                    <h5 style="color: black;" class="col-12">
+                                        {{ big_question.number }}.{{ small_question.stem }}
+                                    </h5>
+                                    {% for choice in choices %}
+                                        {% if choice.small_question == small_question %}
+                                            <div class="col-12">
+                                                <p style="color: gray;">
+                                                    ·{{ choice.choice_stem }}.{{ choice.choice_text }}
+                                                </p>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                            <hr style="width: 100%;"/>
+                        {% elif big_question.kind == 'ReadingComprehension' or big_question.kind == 'Cloze' %}
+                            <div class="col-12">
+                                <p style="color: black;">
+                                    {{ big_question.essay }}
+                                </p>
                             </div>
+                            <hr style="width: 100%;"/>
+                            {% for small_question in small_questions %}
+                                {% if small_question.big_question == big_question %}
+                                    <div class="form-group col-12">
+                                        <label for="{{ big_question.number|add:small_question.number_offset }}" class="col-2">答案：</label>
+                                        <input type="text" class="form-control col-3" id="{{ big_question.number|add:small_question.number_offset }}" name="{{ big_question.number|add:small_question.number_offset }}">
+                                    </div>
+                                    <h5 style="color: black;" class="col-12">
+                                        {{ big_question.number|add:small_question.number_offset }}.{{ small_question.stem }}
+                                    </h5>
+                                    {% for choice in choices %}
+                                        {% if choice.small_question == small_question %}
+                                            <div class="col-12">
+                                                <p style="color: gray;">
+                                                    ·{{ choice.choice_stem }}.{{ choice.choice_text }}
+                                                </p>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <hr style="width: 100%;"/>
+                                {% endif %}
+                            {% endfor %}
                         {% endif %}
-                        <h5 style="color: black;" class="col-12">
-                            {{ question.stem }}
-                        </h5>
-                        <div class="col-12">
-                            <p style="color: gray;">
-                                {{ question.choice_1 }}
-                            </p>
-                        </div>
-                        <div class="col-12">
-                            <p style="color: gray;">
-                                {{ question.choice_2 }}
-                            </p>
-                        </div>
-                        <div class="col-12">
-                            <p style="color: gray;">
-                                {{ question.choice_3 }}
-                            </p>
-                        </div>
-                        <div class="col-12">
-                            <p style="color: gray;">
-                                {{ question.choice_4 }}
-                            </p>
-                        </div>
-
-                        <hr style="width: 100%;"/>
                     {% endfor %}
+                    {% if big_questions %}
+                            <button type="submit" class="btn btn-primary">完成</button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
             <div>
-                {% if user == homework.teacher %}
-                    · <a href="{% url 'homework:create_single_choice_question' homework.id %}">添加单选题</a>
-                {% endif %}
+{#                {% if user == homework.teacher %}#}
+{#                    · <a href="{% url 'homework:create_single_choice_question' homework.id %}">添加单选题</a>#}
+{#                {% endif %}#}
             </div>
         </div>
     </div>
