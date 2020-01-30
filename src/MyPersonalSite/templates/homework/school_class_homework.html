@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    班级作业总览
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-9">
+                <h5>班级名称：{{ school_class.name }}</h5>
+                <div class="tab-content">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>学生姓名</th>
+                                <th>得分</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for grade in grades %}
+                                <tr>
+                                    <td>{{ grade.student.username }}</td>
+                                    <td>{{ grade.final_grade }}</td>
+                                    <td>
+                                        <a href="{% url 'homework:mark_homework' grade.homework.id grade.student.id %}">阅卷</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+    </script>
+{% endblock content %}

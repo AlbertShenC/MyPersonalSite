@@ -9,6 +9,7 @@ from itertools import chain
 from operator import attrgetter
 from .models import *
 from .forms import *
+from user.models import SchoolClassPost
 
 # Create your views here.
 
@@ -131,6 +132,7 @@ def calculate_total_grade(homework_id, student_id):
 def submit_homework(request, homework_id):
     if request.method == 'POST':
         student = request.user
+        print(student)
         for answer in request.POST.lists():
             if answer[0].isdigit():
                 small_question = SmallQuestionPost.objects.get(id=int(answer[0]))
@@ -139,11 +141,12 @@ def submit_homework(request, homework_id):
                     new_answer = AnswerPost.objects.get(small_question=small_question.id,
                                                         student=student.id)
                     new_answer.answer_text = answer[1][0]
+                    new_answer.save()
                 else:
                     new_answer = AnswerPost(small_question=small_question,
                                             student=student,
                                             answer_text=answer[1][0])
-                new_answer.save()
+                    new_answer.save()
         if not GradePost.objects.filter(student=student.id, homework=homework_id):
             grade = GradePost(student=User.objects.get(id=student.id),
                               homework=HomeworkPost.objects.get(id=homework_id))
@@ -183,13 +186,9 @@ def mark_homework(request, homework_id, student_id):
         return render(request, 'homework/mark_student_homework_grade.html', context)
 
 
-
-
 @login_required(login_url='/user/login/')
-def homework_grade(request):
+def homework_grade(request, homework_id, student_id):
     if request.method == 'GET':
-        student_id = request.GET['student_id']
-        homework_id = request.GET['homework_id']
         student = User.objects.get(id=student_id)
         homework = HomeworkPost.objects.get(id=homework_id)
         answers = AnswerPost.objects.filter(small_question__big_question__homework=homework_id,
@@ -206,26 +205,73 @@ def homework_grade(request):
         return HttpResponse('仅支持GET请求。')
 
 
-
-
 # @login_required(login_url='/user/login/')
-# def create_single_choice_question(request, homework_id):
-#     if request.method == 'POST':
-#         single_choice_question_form = SingleChoiceQuestionPostForm(request.POST)
-#         if single_choice_question_form.is_valid():
-#             new_single_choice_question = single_choice_question_form.save(commit=False)
-#             new_single_choice_question.homework = HomeworkPost.objects.get(id=homework_id)
-#             new_single_choice_question.save()
-#             return redirect(reverse('homework:homework_detail', args=[homework_id]))
-#         else:
-#             return HttpResponse('表单内容有误，请重新填写。')
-#     else:
-#         single_choice_question_form = SingleChoiceQuestionPostForm()
+# def school_class(request, school_class_id):
+#     if request.method == 'GET':
+#         grades = GradePost.objects.filter(student__profile__school_class=school_class_id,
+#                                           homework=homework_id)
+#         school_class = SchoolClassPost.objects.get(id=school_class_id)
 #         context = {
-#             'single_choice_question_form': single_choice_question_form
+#             'grades': grades,
+#             'school_class': school_class
 #         }
-#         return render(request, 'homework/create_single_choice_question.html', context)
-#
+#         return render(request, 'homework/school_class_homework.html', context)
+#     else:
+#         return HttpResponse('仅支持GET请求。')
+
+
+
+@login_required(login_url='/user/login/')
+def school_class_homework(request, school_class_id, homework_id):
+    if request.method == 'GET':
+        grades = GradePost.objects.filter(student__profile__school_class=school_class_id,
+                                          homework=homework_id)
+        school_class = SchoolClassPost.objects.get(id=school_class_id)
+        context = {
+            'grades': grades,
+            'school_class': school_class
+        }
+        return render(request, 'homework/school_class_homework.html', context)
+    else:
+        return HttpResponse('仅支持GET请求。')
+
+
+@login_required(login_url='/user/login/')
+def homework_overview(request, homework_id):
+    if request.method == 'GET':
+        grades = GradePost.objects.filter(homework=homework_id)
+        context = {
+            'grades': grades,
+        }
+        return render(request, 'homework/school_class_homework.html', context)
+    else:
+        return HttpResponse('仅支持GET请求。')
+
+
+@login_required(login_url='/user/login/')
+def create_choice_question(request, homework_id):
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        stem = request.POST.get('stem')
+        choice_number = int(request.POST.get('choice_number'))
+        reference_answer = request.POST.get('reference_answer')
+        score = request.POST.get('score')
+
+        new_big_question = BigQuestionPost(homework=HomeworkPost.objects.get(id=homework_id),
+                                           number=number, kind='SingleChoice')
+        new_big_question.save()
+        new_small_question = SmallQuestionPost(big_question=new_big_question, stem=stem,
+                                               reference_answer=reference_answer,
+                                               score=score)
+        new_small_question.save()
+        for i in range(0, choice_number):
+            ChoicePost(small_question=new_small_question,
+                       choice_stem=chr(ord('A') + i),
+                       choice_text=request.POST.get(chr(ord('A') + i))).save()
+
+        return redirect(reverse('homework:homework_detail', args=[homework_id]))
+    else:
+        return render(request, 'homework/create_choice_question.html')
 #
 # @login_required(login_url='/user/login/')
 # def update_single_choice_question(request, question_id):

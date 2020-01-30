@@ -20,6 +20,7 @@
                                 <th>题号</th>
                                 <th>学生答案</th>
                                 <th>参考答案</th>
+                                <th>总分</th>
                                 <th>得分</th>
                             </tr>
                         </thead>
@@ -29,8 +30,13 @@
                                     <td>{{ answer.small_question.big_question.number|add:answer.small_question.number_offset }}</td>
                                     <td>{{ answer.answer_text }}</td>
                                     <td>{{ answer.small_question.reference_answer }}</td>
+                                    <td>{{ answer.small_question.score }}</td>
                                     <td>
-                                        <input type="text" class="form-control col-3" id="{{ answer.small_question.id }}" name="{{ answer.small_question.id }}">
+                                        <input type="text" class="form-control col-3"
+                                               id="{{ answer.small_question.id }}"
+                                               name="{{ answer.small_question.id }}"
+                                               value="{{ answer.final_grade }}"
+                                        >
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -14,18 +14,17 @@ urlpatterns = [
     path('update/<int:homework_id>/', views.homework_update, name='homework_update'),
     path('delete/<int:homework_id>/', views.homework_delete, name='homework_delete'),
     path('submit_homework/<int:homework_id>/', views.submit_homework, name='submit_homework'),
-    path('homework_grade/', views.homework_grade, name='homework_grade'),
+    # 查看某次作业某位学生成绩
+    path('homework_grade/<int:homework_id>/<int:student_id>/', views.homework_grade, name='homework_grade'),
+    # 批改某次作业某位学生作业
     path('mark_homework/<int:homework_id>/<int:student_id>/', views.mark_homework, name='mark_homework'),
-    # path('create_single_choice_question/<int:homework_id>/', views.create_single_choice_question,
-    #      name='create_single_choice_question'),
-    # path('update_single_choice_question/<int:question_id>/', views.update_single_choice_question,
-    #      name='update_single_choice_question'),
-    # path('delete_single_choice_question/<int:question_id>/', views.delete_single_choice_question,
-    #      name='delete_single_choice_question'),
-    # path('create_reading_comprehension_question/<int:homework_id>/', views.create_reading_comprehension_question,
-    #      name='create_reading_comprehension_question'),
-    # path('update_reading_comprehension_question/<int:question_id>/', views.update_reading_comprehension_question,
-    #      name='update_reading_comprehension_question'),
-    # path('delete_reading_comprehension_question/<int:question_id>/', views.delete_reading_comprehension_question,
-    #      name='delete_reading_comprehension_question'),
+    # 查看某班总览
+    # path('class/<int:school_class_id>/', views.school_class, name='school_class'),
+    # # 查看某班某次作业总览
+    # path('class/<int:school_class_id>/homework/<int:homework_id>/', views.school_class_homework, name='school_class_homework'),
+    # 查看某次作业总览
+    path('homework_overview/<int:homework_id>/', views.homework_overview, name='homework_overview'),
+    # 添加选择题
+    path('create_choice_question/<int:homework_id>/', views.create_choice_question, name='create_choice_question'),
+
 ]

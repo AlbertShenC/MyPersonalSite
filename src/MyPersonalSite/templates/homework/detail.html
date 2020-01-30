@@ -93,7 +93,7 @@
             </div>
             <div>
 {#                {% if user == homework.teacher %}#}
-{#                    · <a href="{% url 'homework:create_single_choice_question' homework.id %}">添加单选题</a>#}
+                    · <a href="{% url 'homework:create_choice_question' homework.id %}">添加选择题</a>
 {#                {% endif %}#}
             </div>
         </div>
