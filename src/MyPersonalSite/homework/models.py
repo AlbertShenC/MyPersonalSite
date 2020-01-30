@@ -29,7 +29,7 @@ class HomeworkPost(models.Model):
         ordering = ('-created',)
 
     def __str__(self):
-        return self.title
+        return 'Homework {0}.{1}'.format(self.id, self.title)
 
 
 # 大题表：一道单选/一道多选/一篇阅读/一篇完型
@@ -40,10 +40,11 @@ class BigQuestionPost(models.Model):
     essay = models.TextField(default='', blank=True)
 
     class Meta:
-        ordering = ('number',)
+        ordering = ('-homework__created',
+                    'number',)
 
     def __str__(self):
-        return 'Homework {0}-{1}.{2}'.format(str(self.homework.id), str(self.number), self.essay[:10])
+        return 'BigProblem {0}-{1}.{2}'.format(self.homework.id, self.number, self.essay[:10])
 
 
 # 小题表：一道单选/一道多选，阅读/完型的一小道题
@@ -55,10 +56,15 @@ class SmallQuestionPost(models.Model):
     score = models.IntegerField(default=0)
 
     class Meta:
-        ordering = ('number_offset',)
+        ordering = ('-big_question__homework__created',
+                    'big_question__number',
+                    'number_offset',)
 
     def __str__(self):
-        return 'Question {0}-{1}.{2}'.format(str(self.big_question.id), str(self.number_offset), self.stem[:10])
+        return 'SmallQuestion {0}-{1}.{2}.{3}'.format(self.big_question.homework.id,
+                                                      self.big_question.number,
+                                                      self.number_offset,
+                                                      self.stem[:10])
 
 
 # 选项表：一个选项
@@ -70,10 +76,16 @@ class ChoicePost(models.Model):
     choice_text = models.TextField(default='')
 
     class Meta:
-        ordering = ('choice_stem',)
+        ordering = ('-small_question__big_question__homework__created',
+                    'small_question__big_question__number',
+                    'small_question__number_offset',
+                    'choice_stem',)
 
     def __str__(self):
-        return '{0}.{1}'.format(self.choice_stem, self.choice_text[:10])
+        return 'Choice {0}-{1}.{2}.{3}.{4}'.format(self.small_question.big_question.homework.id,
+                                                   self.small_question.big_question.number,
+                                                   self.small_question.number_offset,
+                                                   self.choice_stem, self.choice_text[:10])
 
 
 # 答案表
@@ -84,10 +96,16 @@ class AnswerPost(models.Model):
     final_grade = models.IntegerField(default=0)
 
     class Meta:
-        ordering = ('small_question',)
+        ordering = ('-small_question__big_question__homework__created',
+                    'small_question__big_question__number',
+                    'small_question__number_offset',)
 
     def __str__(self):
-        return self.answer_text[:10]
+        return 'Answer {0}.{1}-{2}.{3}:{4}'.format(self.student.username,
+                                                   self.small_question.big_question.homework.id,
+                                                   self.small_question.big_question.number,
+                                                   self.small_question.number_offset,
+                                                   self.answer_text[:10])
 
 
 # 成绩表
@@ -100,4 +118,6 @@ class GradePost(models.Model):
         ordering = ('homework',)
 
     def __str__(self):
-        return self.student
+        return '{0}.Homework{1}  {2}分'.format(self.student.username,
+                                             self.homework.id,
+                                             self.final_grade)

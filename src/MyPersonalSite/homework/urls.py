@@ -13,7 +13,9 @@ urlpatterns = [
     path('create/', views.homework_create, name='homework_create'),
     path('update/<int:homework_id>/', views.homework_update, name='homework_update'),
     path('delete/<int:homework_id>/', views.homework_delete, name='homework_delete'),
-    
+    path('submit_homework/<int:homework_id>/', views.submit_homework, name='submit_homework'),
+    path('homework_grade/', views.homework_grade, name='homework_grade'),
+    path('mark_homework/<int:homework_id>/<int:student_id>/', views.mark_homework, name='mark_homework'),
     # path('create_single_choice_question/<int:homework_id>/', views.create_single_choice_question,
     #      name='create_single_choice_question'),
     # path('update_single_choice_question/<int:question_id>/', views.update_single_choice_question,

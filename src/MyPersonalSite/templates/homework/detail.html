@@ -29,7 +29,7 @@
 
                 <div class="row mt-2 col-12">
                     {% if big_questions %}
-                        <form method="post" action="." enctype="multipart/form-data" class="col-12">
+                        <form method="post" action="{% url 'homework:submit_homework' homework.id %}" enctype="multipart/form-data" class="col-12">
                             {% csrf_token %}
                     {% endif %}
                     {% for big_question in big_questions %}
@@ -37,8 +37,8 @@
                             {% for small_question in small_questions %}
                                 {% if small_question.big_question == big_question %}
                                     <div class="form-group col-12">
-                                        <label for="{{ big_question.number }}" class="col-2">答案：</label>
-                                        <input type="text" class="form-control col-3" id="{{ big_question.number }}" name="{{ big_question.number }}">
+                                        <label for="{{ small_question.id }}" class="col-2">答案：</label>
+                                        <input type="text" class="form-control col-3" id="{{ small_question.id }}" name="{{ small_question.id }}">
                                     </div>
                                     <h5 style="color: black;" class="col-12">
                                         {{ big_question.number }}.{{ small_question.stem }}
@@ -65,8 +65,8 @@
                             {% for small_question in small_questions %}
                                 {% if small_question.big_question == big_question %}
                                     <div class="form-group col-12">
-                                        <label for="{{ big_question.number|add:small_question.number_offset }}" class="col-2">答案：</label>
-                                        <input type="text" class="form-control col-3" id="{{ big_question.number|add:small_question.number_offset }}" name="{{ big_question.number|add:small_question.number_offset }}">
+                                        <label for="{{ small_question.id }}" class="col-2">答案：</label>
+                                        <input type="text" class="form-control col-3" id="{{ small_question.id }}" name="{{ small_question.id }}">
                                     </div>
                                     <h5 style="color: black;" class="col-12">
                                         {{ big_question.number|add:small_question.number_offset }}.{{ small_question.stem }}

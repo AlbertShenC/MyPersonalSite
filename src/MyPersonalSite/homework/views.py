@@ -49,17 +49,8 @@ def homework_main(request):
 def homework_detail(request, homework_id):
     homework = HomeworkPost.objects.get(id=homework_id)
     big_questions = BigQuestionPost.objects.filter(homework=homework_id)
-    small_questions = SmallQuestionPost.objects.filter(big_question=big_questions[0].id)
-    for big_question in big_questions[1:]:
-        small_questions = small_questions | SmallQuestionPost.objects.filter(big_question=big_question.id)
-    choices = ChoicePost.objects.filter(small_question=small_questions[0].id)
-    for small_question in small_questions[1:]:
-        choices = choices | ChoicePost.objects.filter(small_question=small_question.id)
-
-    # single_choice_question = SingleChoiceQuestionPost.objects.filter(homework=homework_id)
-    # reading_comprehension_quesiton = ReadingComprehensionQuestionPost.objects.filter(homework=homework_id)
-    # questions = sorted(chain(single_choice_question, reading_comprehension_quesiton),
-    #                    key=attrgetter('number'), reverse=False)
+    small_questions = SmallQuestionPost.objects.filter(big_question__homework__id=homework_id)
+    choices = ChoicePost.objects.filter(small_question__big_question__homework__id=homework_id)
 
     context = {
         'homework': homework,
@@ -125,6 +116,96 @@ def homework_update(request, homework_id):
             'homework': homework
         }
         return render(request, 'homework/update_homework.html', context)
+
+
+def calculate_total_grade(homework_id, student_id):
+    answers = AnswerPost.objects.filter(small_question__big_question__homework=homework_id,
+                                        student=student_id).values('final_grade')
+    total_grade = 0
+    for answer in answers:
+        total_grade = total_grade + answer['final_grade']
+    return total_grade
+
+
+@login_required(login_url='/user/login/')
+def submit_homework(request, homework_id):
+    if request.method == 'POST':
+        student = request.user
+        for answer in request.POST.lists():
+            if answer[0].isdigit():
+                small_question = SmallQuestionPost.objects.get(id=int(answer[0]))
+                if AnswerPost.objects.filter(small_question=small_question.id,
+                                             student=student.id):
+                    new_answer = AnswerPost.objects.get(small_question=small_question.id,
+                                                        student=student.id)
+                    new_answer.answer_text = answer[1][0]
+                else:
+                    new_answer = AnswerPost(small_question=small_question,
+                                            student=student,
+                                            answer_text=answer[1][0])
+                new_answer.save()
+        if not GradePost.objects.filter(student=student.id, homework=homework_id):
+            grade = GradePost(student=User.objects.get(id=student.id),
+                              homework=HomeworkPost.objects.get(id=homework_id))
+            grade.save()
+        return redirect('homework:homework_list')
+    else:
+        return HttpResponse('仅支持POST请求。')
+
+
+@login_required(login_url='/user/login/')
+def mark_homework(request, homework_id, student_id):
+    if request.method == 'POST':
+        for mark_grade in request.POST.lists():
+            if mark_grade[0].isdigit():
+                answer = AnswerPost.objects.get(small_question=int(mark_grade[0]), student=student_id)
+                answer.final_grade = int(mark_grade[1][0])
+                answer.save()
+        if GradePost.objects.filter(student=student_id, homework=homework_id):
+            grade = GradePost.objects.get(student=student_id, homework=homework_id)
+        else:
+            grade = GradePost(student=User.objects.get(id=student_id),
+                              homework=HomeworkPost.objects.get(id=homework_id))
+        grade.final_grade = calculate_total_grade(homework_id, student_id)
+        grade.save()
+
+        return redirect(reverse('homework:mark_homework', args=[homework_id, student_id]))
+    elif request.method == 'GET':
+        student = User.objects.get(id=student_id)
+        homework = HomeworkPost.objects.get(id=homework_id)
+        answers = AnswerPost.objects.filter(small_question__big_question__homework=homework_id,
+                                            student=student_id)
+        context = {
+            'student': student,
+            'homework': homework,
+            'answers': answers
+        }
+        return render(request, 'homework/mark_student_homework_grade.html', context)
+
+
+
+
+@login_required(login_url='/user/login/')
+def homework_grade(request):
+    if request.method == 'GET':
+        student_id = request.GET['student_id']
+        homework_id = request.GET['homework_id']
+        student = User.objects.get(id=student_id)
+        homework = HomeworkPost.objects.get(id=homework_id)
+        answers = AnswerPost.objects.filter(small_question__big_question__homework=homework_id,
+                                            student=student_id)
+        total_grade = GradePost.objects.get(student=student_id, homework=homework_id)
+        context = {
+            'student': student,
+            'homework': homework,
+            'answers': answers,
+            'total_grade': total_grade
+        }
+        return render(request, 'homework/student_homework_grade.html', context)
+    else:
+        return HttpResponse('仅支持GET请求。')
+
+
 
 
 # @login_required(login_url='/user/login/')

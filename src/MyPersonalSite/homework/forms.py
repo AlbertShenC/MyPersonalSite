@@ -9,4 +9,3 @@ class HomeworkPostForm(forms.ModelForm):
     class Meta:
         model = HomeworkPost
         fields = ('title', 'instrument')
-
