@@ -147,6 +147,22 @@ def calculate_total_grade(homework_id, student_id):
     return total_grade
 
 
+def auto_check_answer(homework_id, student_id):
+    answers = AnswerPost.objects.filter(small_question__big_question__homework=homework_id,
+                                        student=student_id)
+
+    for answer in answers:
+        small_question = SmallQuestionPost.objects.get(id=answer.small_question.id)
+        if answer.answer_text == small_question.reference_answer:
+            answer.final_grade = small_question.score
+            answer.save()
+
+    grade = GradePost.objects.get(student=student_id, homework=homework_id)
+    grade.final_grade = calculate_total_grade(homework_id, student_id)
+    grade.save()
+    return
+
+
 @login_required(login_url='/user/login/')
 def submit_homework(request, homework_id):
     if request.method == 'POST':
@@ -170,6 +186,7 @@ def submit_homework(request, homework_id):
             grade = GradePost(student=User.objects.get(id=student.id),
                               homework=HomeworkPost.objects.get(id=homework_id))
             grade.save()
+        auto_check_answer(homework_id, student.id)
         return redirect('homework:homework_list')
     else:
         return HttpResponse('仅支持POST请求。')
@@ -191,7 +208,7 @@ def mark_homework(request, homework_id, student_id):
         grade.final_grade = calculate_total_grade(homework_id, student_id)
         grade.save()
 
-        return redirect(reverse('homework:mark_homework', args=[homework_id, student_id]))
+        return redirect(reverse('homework:homework_overview', args=[homework_id]))
     elif request.method == 'GET':
         student = User.objects.get(id=student_id)
         homework = HomeworkPost.objects.get(id=homework_id)
@@ -373,27 +390,7 @@ def create_reading_comprehension_question(request, homework_id):
 
         return redirect(reverse('homework:create_reading_comprehension_small_question', args=[new_big_question.id]))
     else:
-        return render(request, 'homework/create_reading_comprehension_question.html')
-
-
-@login_required(login_url='/user/login/')
-def update_reading_comprehension_question(request, big_question_id):
-    if request.method == 'POST':
-        number = request.POST.get('number')
-        essay = request.POST.get('essay')
-
-        big_question = BigQuestionPost.objects.get(id=big_question_id)
-        big_question.number = number
-        big_question.essay = essay
-        big_question.save()
-
-        return redirect(reverse('homework:homework_detail', args=[big_question.homework.id]))
-    else:
-        big_question = BigQuestionPost.objects.get(id=big_question_id)
-        context = {
-            'big_question': big_question
-        }
-        return render(request, 'homework/create_reading_comprehension_question.html', context)
+        return render(request, 'homework/update_big_question.html')
 
 
 @login_required(login_url='/user/login/')
@@ -435,7 +432,7 @@ def create_cloze_question(request, homework_id):
 
         return redirect(reverse('homework:create_cloze_small_question', args=[new_big_question.id]))
     else:
-        return render(request, 'homework/create_reading_comprehension_question.html')
+        return render(request, 'homework/update_big_question.html')
 
 
 @login_required(login_url='/user/login/')
@@ -461,3 +458,57 @@ def create_cloze_small_question(request, big_question_id):
         return redirect(reverse('homework:homework_detail', args=[new_small_question.big_question.homework.id]))
     else:
         return render(request, 'homework/create_cloze_small_question.html')
+
+
+@login_required(login_url='/user/login/')
+def update_big_question(request, big_question_id):
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        essay = request.POST.get('essay')
+
+        big_question = BigQuestionPost.objects.get(id=big_question_id)
+        big_question.number = number
+        big_question.essay = essay
+        big_question.save()
+
+        return redirect(reverse('homework:homework_detail', args=[big_question.homework.id]))
+    else:
+        big_question = BigQuestionPost.objects.get(id=big_question_id)
+        context = {
+            'big_question': big_question
+        }
+        return render(request, 'homework/update_big_question.html', context)
+
+
+@login_required(login_url='/user/login/')
+def update_small_question(request, small_question_id):
+    if request.method == 'POST':
+        number_offset = request.POST.get('number_offset')
+        stem = request.POST.get('stem')
+        reference_answer = request.POST.get('reference_answer')
+        score = request.POST.get('score')
+        choice_number = int(request.POST.get('choice_number'))
+
+        small_question = SmallQuestionPost.objects.get(id=small_question_id)
+        small_question.number_offset = number_offset
+        small_question.stem = stem
+        small_question.reference_answer = reference_answer
+        small_question.score = score
+        small_question.save()
+
+        ChoicePost.objects.filter(small_question=small_question.id).delete()
+
+        for i in range(0, choice_number):
+            ChoicePost(small_question=small_question,
+                       choice_stem=chr(ord('A') + i),
+                       choice_text=request.POST.get(chr(ord('A') + i))).save()
+
+        return redirect(reverse('homework:homework_detail', args=[small_question.big_question.homework.id]))
+    else:
+        small_question = SmallQuestionPost.objects.get(id=small_question_id)
+        choices = ChoicePost.objects.filter(small_question=small_question_id)
+        context = {
+            'small_question': small_question,
+            'choices': choices
+        }
+        return render(request, 'homework/update_small_question.html', context)

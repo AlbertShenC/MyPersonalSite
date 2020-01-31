@@ -45,9 +45,6 @@ urlpatterns = [
     # 添加阅读理解大题
     path('create_reading_comprehension_question/<int:homework_id>/', views.create_reading_comprehension_question,
          name='create_reading_comprehension_question'),
-    # 修改阅读理解大题
-    path('update_reading_comprehension_question/<int:big_question_id>/', views.update_reading_comprehension_question,
-         name='update_reading_comprehension_question'),
     # 添加阅读理解小题
     path('create_reading_comprehension_small_question/<int:big_question_id>/',
          views.create_reading_comprehension_small_question, name='create_reading_comprehension_small_question'),
@@ -58,4 +55,11 @@ urlpatterns = [
     # 添加完形填空小题
     path('create_cloze_small_question/<int:big_question_id>/',
          views.create_cloze_small_question, name='create_cloze_small_question'),
+
+    # 修改大题
+    path('update_big_question/<int:big_question_id>/', views.update_big_question,
+         name='update_big_question'),
+    # 修改小题
+    path('update_small_question/<int:small_question_id>/', views.update_small_question,
+         name='update_small_question'),
 ]

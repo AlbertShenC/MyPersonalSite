@@ -55,7 +55,7 @@
                         {% elif big_question.kind == 'ReadingComprehension' or big_question.kind == 'Cloze' %}
                             <div class="col-12">
                                 · <a href="#" onclick="confirm_delete('{% url 'homework:delete_big_question' big_question.id %}')">删除此题</a>
-                                · <a href="{% url 'homework:update_reading_comprehension_question' big_question.id %}">修改文章</a>
+                                · <a href="{% url 'homework:update_big_question' big_question.id %}">修改文章</a>
                                 <p style="color: black;">
                                     {{ big_question.essay }}
                                 </p>
@@ -67,6 +67,7 @@
                                     <div class="col-10">
                                         <div class="form-group col-12">
                                             · <a href="#" onclick="confirm_delete('{% url 'homework:delete_small_question' small_question.id %}')">删除此小题</a>
+                                            · <a href="{% url 'homework:update_small_question' small_question.id %}">修改此小题</a>
                                             <label for="{{ small_question.id }}" class="col-2">答案：</label>
                                             <input type="text" class="form-control col-3" id="{{ small_question.id }}" name="{{ small_question.id }}">
                                         </div>
