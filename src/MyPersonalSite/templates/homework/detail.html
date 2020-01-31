@@ -64,22 +64,25 @@
                             <hr style="width: 100%;"/>
                             {% for small_question in small_questions %}
                                 {% if small_question.big_question == big_question %}
-                                    <div class="form-group col-12">
-                                        <label for="{{ small_question.id }}" class="col-2">答案：</label>
-                                        <input type="text" class="form-control col-3" id="{{ small_question.id }}" name="{{ small_question.id }}">
+                                    <div class="col-2"></div>
+                                    <div class="col-10">
+                                        <div class="form-group col-12">
+                                            <label for="{{ small_question.id }}" class="col-2">答案：</label>
+                                            <input type="text" class="form-control col-3" id="{{ small_question.id }}" name="{{ small_question.id }}">
+                                        </div>
+                                        <h5 style="color: black;" class="col-12">
+                                            {{ big_question.number|add:small_question.number_offset }}.{{ small_question.stem }}
+                                        </h5>
+                                        {% for choice in choices %}
+                                            {% if choice.small_question == small_question %}
+                                                <div class="col-12">
+                                                    <p style="color: gray;">
+                                                        ·{{ choice.choice_stem }}.{{ choice.choice_text }}
+                                                    </p>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
                                     </div>
-                                    <h5 style="color: black;" class="col-12">
-                                        {{ big_question.number|add:small_question.number_offset }}.{{ small_question.stem }}
-                                    </h5>
-                                    {% for choice in choices %}
-                                        {% if choice.small_question == small_question %}
-                                            <div class="col-12">
-                                                <p style="color: gray;">
-                                                    ·{{ choice.choice_stem }}.{{ choice.choice_text }}
-                                                </p>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
                                     <hr style="width: 100%;"/>
                                 {% endif %}
                             {% endfor %}
@@ -91,9 +94,11 @@
                     {% endif %}
                 </div>
             </div>
-            <div>
+            <div class="col-3">
 {#                {% if user == homework.teacher %}#}
                     · <a href="{% url 'homework:create_choice_question' homework.id %}">添加选择题</a>
+                    · <a href="{% url 'homework:create_reading_comprehension_question' homework.id %}">添加阅读理解题</a>
+                    · <a href="{% url 'homework:create_cloze_question' homework.id %}">添加完形填空题</a>
 {#                {% endif %}#}
             </div>
         </div>

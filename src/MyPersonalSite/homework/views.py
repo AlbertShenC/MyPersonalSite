@@ -272,58 +272,86 @@ def create_choice_question(request, homework_id):
         return redirect(reverse('homework:homework_detail', args=[homework_id]))
     else:
         return render(request, 'homework/create_choice_question.html')
-#
-# @login_required(login_url='/user/login/')
-# def update_single_choice_question(request, question_id):
-#     single_choice_question = SingleChoiceQuestionPost.objects.get(id=question_id)
-#     if request.method == 'POST':
-#         single_choice_question_form = SingleChoiceQuestionPostForm(request.POST)
-#         if single_choice_question_form.is_valid():
-#             single_choice_question.stem = request.POST['stem']
-#             single_choice_question.choice_1 = request.POST['choice_1']
-#             single_choice_question.choice_2 = request.POST['choice_2']
-#             single_choice_question.choice_3 = request.POST['choice_3']
-#             single_choice_question.choice_4 = request.POST['choice_4']
-#             single_choice_question.answer = request.POST['answer']
-#             single_choice_question.save()
-#             return redirect(reverse('homework:homework_detail', args=[single_choice_question.homework.id]))
-#         else:
-#             return HttpResponse('表单内容有误，请重新填写。')
-#     else:
-#         single_choice_question_form = SingleChoiceQuestionPostForm()
-#         context = {
-#             'single_choice_question_form': single_choice_question_form,
-#             'single_choice_question': single_choice_question
-#         }
-#         return render(request, 'homework/update_single_choice_question.html', context)
-#
-#
-# @login_required(login_url='/user/login/')
-# def delete_single_choice_question(request, question_id):
-#     if request.method == 'POST':
-#         single_choice_question = SingleChoiceQuestionPost.objects.get(id=question_id)
-#         if request.user != single_choice_question.homework.teacher:
-#             return HttpResponse("抱歉，你无权删除这篇作业。")
-#         single_choice_question.delete()
-#         return redirect(reverse('homework:homework_detail', args=[single_choice_question.homework.id]))
-#     else:
-#         return HttpResponse("仅允许post请求")
-#
-#
-# @login_required(login_url='/user/login/')
-# def create_reading_comprehension_question(request, homework_id):
-#     if request.method == 'POST':
-#         reading_comprehension_question_form = ReadingComprehensionQuestionPostForm(request.POST)
-#         if reading_comprehension_question_form.is_valid():
-#             new_reading_comprehension_question = reading_comprehension_question_form.save(commit=False)
-#             new_reading_comprehension_question.homework = HomeworkPost.objects.get(id=homework_id)
-#             new_reading_comprehension_question.save()
-#             return redirect(reverse('homework:homework_detail', args=[homework_id]))
-#         else:
-#             return HttpResponse('表单内容有误，请重新填写。')
-#     else:
-#         reading_comprehension_question_form = ReadingComprehensionQuestionPostForm()
-#         context = {
-#             'single_choice_question_form': reading_comprehension_question_form
-#         }
-#         return render(request, 'homework/create_reading_comprehension_question.html', context)
+
+
+@login_required(login_url='/user/login/')
+def create_reading_comprehension_question(request, homework_id):
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        essay = request.POST.get('essay')
+
+        new_big_question = BigQuestionPost(homework=HomeworkPost.objects.get(id=homework_id),
+                                           number=number, kind='ReadingComprehension',
+                                           essay=essay)
+        new_big_question.save()
+
+        return redirect(reverse('homework:create_reading_comprehension_small_question', args=[new_big_question.id]))
+    else:
+        return render(request, 'homework/create_reading_comprehension_question.html')
+
+
+@login_required(login_url='/user/login/')
+def create_reading_comprehension_small_question(request, big_question_id):
+    if request.method == 'POST':
+        number_offset = request.POST.get('number_offset')
+        stem = request.POST.get('stem')
+        choice_number = int(request.POST.get('choice_number'))
+        reference_answer = request.POST.get('reference_answer')
+        score = request.POST.get('score')
+
+        new_small_question = SmallQuestionPost(big_question=BigQuestionPost.objects.get(id=big_question_id),
+                                               number_offset=number_offset, stem=stem,
+                                               reference_answer=reference_answer,
+                                               score=score)
+        new_small_question.save()
+        for i in range(0, choice_number):
+            ChoicePost(small_question=new_small_question,
+                       choice_stem=chr(ord('A') + i),
+                       choice_text=request.POST.get(chr(ord('A') + i))).save()
+
+        if request.POST.get('add_new_question') == '1':
+            return render(request, 'homework/create_reading_comprehension_small_question.html')
+        return redirect(reverse('homework:homework_detail', args=[new_small_question.big_question.homework.id]))
+    else:
+        return render(request, 'homework/create_reading_comprehension_small_question.html')
+
+
+@login_required(login_url='/user/login/')
+def create_cloze_question(request, homework_id):
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        essay = request.POST.get('essay')
+
+        new_big_question = BigQuestionPost(homework=HomeworkPost.objects.get(id=homework_id),
+                                           number=number, kind='Cloze',
+                                           essay=essay)
+        new_big_question.save()
+
+        return redirect(reverse('homework:create_cloze_small_question', args=[new_big_question.id]))
+    else:
+        return render(request, 'homework/create_reading_comprehension_question.html')
+
+
+@login_required(login_url='/user/login/')
+def create_cloze_small_question(request, big_question_id):
+    if request.method == 'POST':
+        number_offset = request.POST.get('number_offset')
+        choice_number = int(request.POST.get('choice_number'))
+        reference_answer = request.POST.get('reference_answer')
+        score = request.POST.get('score')
+
+        new_small_question = SmallQuestionPost(big_question=BigQuestionPost.objects.get(id=big_question_id),
+                                               number_offset=number_offset,
+                                               reference_answer=reference_answer,
+                                               score=score)
+        new_small_question.save()
+        for i in range(0, choice_number):
+            ChoicePost(small_question=new_small_question,
+                       choice_stem=chr(ord('A') + i),
+                       choice_text=request.POST.get(chr(ord('A') + i))).save()
+
+        if request.POST.get('add_new_question') == '1':
+            return render(request, 'homework/create_cloze_small_question.html')
+        return redirect(reverse('homework:homework_detail', args=[new_small_question.big_question.homework.id]))
+    else:
+        return render(request, 'homework/create_cloze_small_question.html')

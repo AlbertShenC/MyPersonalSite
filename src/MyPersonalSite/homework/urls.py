@@ -26,5 +26,16 @@ urlpatterns = [
     path('homework_overview/<int:homework_id>/', views.homework_overview, name='homework_overview'),
     # 添加选择题
     path('create_choice_question/<int:homework_id>/', views.create_choice_question, name='create_choice_question'),
-
+    # 添加阅读理解题
+    path('create_reading_comprehension_question/<int:homework_id>/', views.create_reading_comprehension_question,
+         name='create_reading_comprehension_question'),
+    # 添加阅读理解小题
+    path('create_reading_comprehension_small_question/<int:big_question_id>/',
+         views.create_reading_comprehension_small_question, name='create_reading_comprehension_small_question'),
+    # 添加完形填空题
+    path('create_cloze_question/<int:homework_id>/', views.create_cloze_question,
+         name='create_cloze_question'),
+    # # 添加完形填空小题
+    path('create_cloze_small_question/<int:big_question_id>/',
+         views.create_cloze_small_question, name='create_cloze_small_question'),
 ]
