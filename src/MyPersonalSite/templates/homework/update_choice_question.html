@@ -9,36 +9,50 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="number">题目序号</label>
-                    <input type="text" class="form-control" id="number" name="number">
+                    <input type="text" class="form-control" id="number" name="number" value="{{ big_question.number }}">
                 </div>
 
                 <div class="form-group">
                     <label for="score">分值</label>
-                    <input type="text" class="form-control" id="score" name="score">
+                    <input type="text" class="form-control" id="score" name="score" value="{{ small_question.score }}">
                 </div>
 
                 <div class="form-group">
                     <label for="reference_answer">参考答案</label>
-                    <input type="text" class="form-control" id="reference_answer" name="reference_answer">
+                    <input type="text" class="form-control" id="reference_answer" name="reference_answer" value="{{ small_question.reference_answer }}">
                 </div>
 
                 <div class="form-group">
                     <label for="stem">题干</label>
                     <div class="button btn btn-primary" onclick="add_choice()">增加选项</div>
                     <div class="button btn btn-primary" onclick="delete_choice()">减少选项</div>
-                    <input type="text" class="form-control" id="stem" name="stem">
+                    <input type="text" class="form-control" id="stem" name="stem" value="{{ small_question.stem }}">
                 </div>
 
                 <div class="form-group">
                     <input type="text" class="form-control" style="display:none;"
-                           id="choice_number" name="choice_number" value="1">
+                           id="choice_number" name="choice_number"
+                           {% if choices %}
+                               value="{{ choices.count }}"
+                           {% else %}
+                               value="1"
+                           {% endif %}
+                    >
                 </div>
 
-                <div class="form-group">
-                    <label for="A">选项A</label>
-                    <input type="text" class="form-control" id="A" name="A">
-                </div>
-
+                {% if choices %}
+                    {% for choice in choices %}
+                        <div class="form-group">
+                            <label for="{{ choice.choice_stem }}">选项{{ choice.choice_stem }}</label>
+                            <input type="text" class="form-control" id="{{ choice.choice_stem }}" name="{{ choice.choice_stem }}" value="{{ choice.choice_text }}">
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="form-group">
+                        <label for="A">选项A</label>
+                        <input type="text" class="form-control" id="A" name="A">
+                    </div>
+                {% endif %}
                 <button type="submit" class="btn btn-primary" style="display:none;" id="submit">完成</button>
             </form>
         </div>
@@ -48,7 +62,12 @@
     </div>
 </div>
 <script>
-    var choice_number = 1;
+    {% if choices %}
+        var choice_number = {{ choices.count }};
+    {% else %}
+        var choice_number = 1;
+    {% endif %}
+
     function add_choice() {
         var div = document.createElement('div');
         var form=document.getElementById('upload_form');

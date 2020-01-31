@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
@@ -77,7 +77,7 @@ def homework_create(request):
 
         HomeworkPost(teacher=request.user, title=title,
                      column=HomeworkColumn.objects.get(id=column),
-                     instrument=instrument, total_time_minute=total_time_minute)
+                     instrument=instrument, total_time_minute=total_time_minute).save()
         return redirect('homework:homework_list')
     else:
         columns = HomeworkColumn.objects.all()
@@ -85,18 +85,6 @@ def homework_create(request):
             'columns': columns
         }
         return render(request, 'homework/update_homework.html', context)
-
-
-@login_required(login_url='/user/login/')
-def homework_delete(request, homework_id):
-    if request.method == 'POST':
-        homework = HomeworkPost.objects.get(id=homework_id)
-        if request.user != homework.teacher:
-            return HttpResponse("抱歉，你无权删除这篇作业。")
-        homework.delete()
-        return redirect('homework:homework_list')
-    else:
-        return HttpResponse("仅允许post请求")
 
 
 @login_required(login_url='/user/login/')
@@ -127,6 +115,27 @@ def homework_update(request, homework_id):
             'homework': homework
         }
         return render(request, 'homework/update_homework.html', context)
+
+
+@login_required(login_url='/user/login/')
+def homework_delete(request, homework_id):
+    if request.method == 'POST':
+        homework = HomeworkPost.objects.get(id=homework_id)
+        if request.user != homework.teacher:
+            return JsonResponse({
+                "code": "No",
+                "message": "抱歉，你无权删除此题。"
+            })
+        homework.delete()
+        return JsonResponse({
+            "code": "Yes",
+            "new_href": reverse('homework:homework_list')
+        })
+    else:
+        return JsonResponse({
+            "code": "No",
+            "message": "仅允许post请求。"
+        })
 
 
 def calculate_total_grade(homework_id, student_id):
@@ -215,22 +224,6 @@ def homework_grade(request, homework_id, student_id):
         return HttpResponse('仅支持GET请求。')
 
 
-# @login_required(login_url='/user/login/')
-# def school_class(request, school_class_id):
-#     if request.method == 'GET':
-#         grades = GradePost.objects.filter(student__profile__school_class=school_class_id,
-#                                           homework=homework_id)
-#         school_class = SchoolClassPost.objects.get(id=school_class_id)
-#         context = {
-#             'grades': grades,
-#             'school_class': school_class
-#         }
-#         return render(request, 'homework/school_class_homework.html', context)
-#     else:
-#         return HttpResponse('仅支持GET请求。')
-
-
-
 @login_required(login_url='/user/login/')
 def school_class_homework(request, school_class_id, homework_id):
     if request.method == 'GET':
@@ -259,6 +252,50 @@ def homework_overview(request, homework_id):
 
 
 @login_required(login_url='/user/login/')
+def delete_big_question(request, big_question_id):
+    if request.method == 'POST':
+        big_question = BigQuestionPost.objects.get(id=big_question_id)
+        homework_id = big_question.homework.id
+        if request.user != big_question.homework.teacher:
+            return JsonResponse({
+                "code": "No",
+                "message": "抱歉，你无权删除此题。"
+            })
+        big_question.delete()
+        return JsonResponse({
+            "code": "Yes",
+            "new_href": reverse("homework:homework_detail", args=[homework_id])
+        })
+    else:
+        return JsonResponse({
+            "code": "No",
+            "message": "仅允许post请求"
+        })
+
+
+@login_required(login_url='/user/login/')
+def delete_small_question(request, small_question_id):
+    if request.method == 'POST':
+        small_question_id = SmallQuestionPost.objects.get(id=small_question_id)
+        homework_id = small_question_id.big_question.homework.id
+        if request.user != small_question_id.big_question.homework.teacher:
+            return JsonResponse({
+                "code": "No",
+                "message": "抱歉，你无权删除此题。"
+            })
+        small_question_id.delete()
+        return JsonResponse({
+            "code": "Yes",
+            "new_href": reverse("homework:homework_detail", args=[homework_id])
+        })
+    else:
+        return JsonResponse({
+            "code": "No",
+            "message": "仅允许post请求"
+        })
+
+
+@login_required(login_url='/user/login/')
 def create_choice_question(request, homework_id):
     if request.method == 'POST':
         number = request.POST.get('number')
@@ -281,7 +318,46 @@ def create_choice_question(request, homework_id):
 
         return redirect(reverse('homework:homework_detail', args=[homework_id]))
     else:
-        return render(request, 'homework/create_choice_question.html')
+        return render(request, 'homework/update_choice_question.html')
+
+
+@login_required(login_url='/user/login/')
+def update_choice_question(request, big_question_id):
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        stem = request.POST.get('stem')
+        choice_number = int(request.POST.get('choice_number'))
+        reference_answer = request.POST.get('reference_answer')
+        score = request.POST.get('score')
+
+        big_question = BigQuestionPost.objects.get(id=big_question_id)
+        big_question.number = number
+        big_question.save()
+
+        small_question = SmallQuestionPost.objects.get(big_question=big_question)
+        small_question.stem = stem
+        small_question.reference_answer = reference_answer
+        small_question.score = score
+        small_question.save()
+
+        ChoicePost.objects.filter(small_question=small_question.id).delete()
+
+        for i in range(0, choice_number):
+            ChoicePost(small_question=small_question,
+                       choice_stem=chr(ord('A') + i),
+                       choice_text=request.POST.get(chr(ord('A') + i))).save()
+
+        return redirect(reverse('homework:homework_detail', args=[big_question.homework.id]))
+    else:
+        big_question = BigQuestionPost.objects.get(id=big_question_id)
+        small_question = SmallQuestionPost.objects.get(big_question=big_question_id)
+        choices = ChoicePost.objects.filter(small_question__big_question=big_question_id)
+        context = {
+            'big_question': big_question,
+            'small_question': small_question,
+            'choices': choices
+        }
+        return render(request, 'homework/update_choice_question.html', context)
 
 
 @login_required(login_url='/user/login/')

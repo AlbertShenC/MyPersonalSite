@@ -16,15 +16,10 @@
                     {% else %}
                         无
                     {% endif %}
-                    {% if user == homework.teacher %}
+{#                    {% if user == homework.teacher %}#}
                         · <a href="{% url 'homework:homework_update' homework.id %}">修改作业说明</a>
-                        · <a href="#" onclick="confirm_delete('delete')">删除此作业</a>
-                        <form style="display:none;" id="delete"
-                              action="{% url 'homework:homework_delete' homework.id %}" method="POST">
-                            {% csrf_token %}
-                            <button type="submit">发送</button>
-                        </form>
-                    {% endif %}
+                        · <a href="#" onclick="confirm_delete('{% url 'homework:homework_delete' homework.id %}')">删除文章</a>
+{#                    {% endif %}#}
                 </div>
 
                 <div class="row mt-2 col-12">
@@ -37,6 +32,8 @@
                             {% for small_question in small_questions %}
                                 {% if small_question.big_question == big_question %}
                                     <div class="form-group col-12">
+                                        · <a href="#" onclick="confirm_delete('{% url 'homework:delete_big_question' big_question.id %}')">删除此题</a>
+                                        · <a href="{% url 'homework:update_choice_question' big_question.id %}">修改此题</a>
                                         <label for="{{ small_question.id }}" class="col-2">答案：</label>
                                         <input type="text" class="form-control col-3" id="{{ small_question.id }}" name="{{ small_question.id }}">
                                     </div>
@@ -57,6 +54,7 @@
                             <hr style="width: 100%;"/>
                         {% elif big_question.kind == 'ReadingComprehension' or big_question.kind == 'Cloze' %}
                             <div class="col-12">
+                                · <a href="#" onclick="confirm_delete('{% url 'homework:delete_big_question' big_question.id %}')">删除此题</a>
                                 <p style="color: black;">
                                     {{ big_question.essay }}
                                 </p>
@@ -67,6 +65,7 @@
                                     <div class="col-2"></div>
                                     <div class="col-10">
                                         <div class="form-group col-12">
+                                            · <a href="#" onclick="confirm_delete('{% url 'homework:delete_small_question' small_question.id %}')">删除此小题</a>
                                             <label for="{{ small_question.id }}" class="col-2">答案：</label>
                                             <input type="text" class="form-control col-3" id="{{ small_question.id }}" name="{{ small_question.id }}">
                                         </div>
@@ -105,15 +104,31 @@
     </div>
 
     <script>
-        function confirm_delete(delete_ele) {
+        function confirm_delete(delete_url) {
             layer.open({
                 title: "确认删除",
                 content: "此操作不可逆，请谨慎操作",
                 yes: function(index, layero) {
-                    $('form#' + delete_ele + ' button').click();
+                    $.ajax({
+                        type: "POST",
+                        url: delete_url,
+                        data: {
+                            "csrfmiddlewaretoken": document.getElementsByName('csrfmiddlewaretoken')[0].value
+                        },
+                        dataType: "JSON",
+                        success: function(result) {
+                            if(result.code === 'Yes'){
+                                window.location.href=result.new_href;
+                            } else{
+                                alert(result.message);
+                            }
+                        }
+                    })
                     layer.close(index);
                 }
             })
         }
+    
+
     </script>
 {% endblock content %}
