@@ -20,7 +20,7 @@ class HomeworkPost(models.Model):
     column = models.ForeignKey(HomeworkColumn, on_delete=models.CASCADE, related_name='homeworks')
     title = models.TextField(default='')
     instrument = models.TextField(default='', blank=True)
-    total_time_minute = models.TextField(default='')
+    total_time_minute = models.IntegerField(default=0)
 
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now=True)

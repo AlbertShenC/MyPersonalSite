@@ -65,21 +65,26 @@ def homework_detail(request, homework_id):
 @login_required(login_url='/user/login/')
 def homework_create(request):
     if request.method == 'POST':
-        homework_post_form = HomeworkPostForm(request.POST)
-        if homework_post_form.is_valid():
-            new_homework = homework_post_form.save(commit=False)
-            new_homework.teacher = User.objects.get(id=request.user.id)
-            if request.POST['column'] != 'none':
-                new_homework.column = HomeworkColumn.objects.get(id=request.POST['column'])
-            new_homework.save()
-            return redirect('homework:homework_list')
-        else:
-            return HttpResponse('表单内容有误，请重新填写。')
+        title = request.POST.get('title')
+        column = request.POST.get('column')
+        instrument = request.POST.get('instrument')
+        total_time_minute = int(request.POST.get('total_time_minute'))
+
+        if title == '':
+            return HttpResponse('标题不能为空')
+        if total_time_minute < 0:
+            return HttpResponse('完成时间不能小于0')
+
+        HomeworkPost(teacher=request.user, title=title,
+                     column=HomeworkColumn.objects.get(id=column),
+                     instrument=instrument, total_time_minute=total_time_minute)
+        return redirect('homework:homework_list')
     else:
-        homework_post_form = HomeworkPostForm()
         columns = HomeworkColumn.objects.all()
-        context = {'homework_post_form': homework_post_form, 'columns': columns}
-        return render(request, 'homework/create_homework.html', context)
+        context = {
+            'columns': columns
+        }
+        return render(request, 'homework/update_homework.html', context)
 
 
 @login_required(login_url='/user/login/')
@@ -98,21 +103,26 @@ def homework_delete(request, homework_id):
 def homework_update(request, homework_id):
     homework = HomeworkPost.objects.get(id=homework_id)
     if request.method == 'POST':
-        homework_post_form = HomeworkPostForm(request.POST)
-        if homework_post_form.is_valid():
-            homework.title = request.POST['title']
-            homework.instrument = request.POST['instrument']
-            if request.POST['column'] != 'none':
-                homework.column = HomeworkColumn.objects.get(id=request.POST['column'])
-            homework.save()
-            return redirect('homework:homework_list')
-        else:
-            return HttpResponse('表单内容有误，请重新填写。')
+        title = request.POST.get('title')
+        column = request.POST.get('column')
+        instrument = request.POST.get('instrument')
+        total_time_minute = int(request.POST.get('total_time_minute'))
+
+        if title == '':
+            return HttpResponse('标题不能为空')
+        if total_time_minute < 0:
+            return HttpResponse('完成时间不能小于0')
+
+        homework = HomeworkPost.objects.get(id=homework_id)
+        homework.title = title
+        homework.column = HomeworkColumn.objects.get(id=column)
+        homework.instrument = instrument
+        homework.total_time_minute = total_time_minute
+        homework.save()
+        return redirect('homework:homework_list')
     else:
-        homework_post_form = HomeworkPostForm()
         columns = HomeworkColumn.objects.all()
         context = {
-            'homework_post_form': homework_post_form,
             'columns': columns,
             'homework': homework
         }
