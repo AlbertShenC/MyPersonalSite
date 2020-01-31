@@ -377,6 +377,26 @@ def create_reading_comprehension_question(request, homework_id):
 
 
 @login_required(login_url='/user/login/')
+def update_reading_comprehension_question(request, big_question_id):
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        essay = request.POST.get('essay')
+
+        big_question = BigQuestionPost.objects.get(id=big_question_id)
+        big_question.number = number
+        big_question.essay = essay
+        big_question.save()
+
+        return redirect(reverse('homework:homework_detail', args=[big_question.homework.id]))
+    else:
+        big_question = BigQuestionPost.objects.get(id=big_question_id)
+        context = {
+            'big_question': big_question
+        }
+        return render(request, 'homework/create_reading_comprehension_question.html', context)
+
+
+@login_required(login_url='/user/login/')
 def create_reading_comprehension_small_question(request, big_question_id):
     if request.method == 'POST':
         number_offset = request.POST.get('number_offset')
