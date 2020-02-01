@@ -52,12 +52,15 @@ def homework_detail(request, homework_id):
     big_questions = BigQuestionPost.objects.filter(homework=homework_id)
     small_questions = SmallQuestionPost.objects.filter(big_question__homework__id=homework_id)
     choices = ChoicePost.objects.filter(small_question__big_question__homework__id=homework_id)
+    answers = AnswerPost.objects.filter(small_question__big_question__homework__id=homework_id,
+                                        student=request.user.id)
 
     context = {
         'homework': homework,
         'big_questions': big_questions,
         'small_questions': small_questions,
-        'choices': choices
+        'choices': choices,
+        'answers': answers
     }
     return render(request, 'homework/detail.html', context)
 
@@ -155,7 +158,9 @@ def auto_check_answer(homework_id, student_id):
         small_question = SmallQuestionPost.objects.get(id=answer.small_question.id)
         if answer.answer_text == small_question.reference_answer:
             answer.final_grade = small_question.score
-            answer.save()
+        else:
+            answer.final_grade = 0
+        answer.save()
 
     grade = GradePost.objects.get(student=student_id, homework=homework_id)
     grade.final_grade = calculate_total_grade(homework_id, student_id)
@@ -167,7 +172,6 @@ def auto_check_answer(homework_id, student_id):
 def submit_homework(request, homework_id):
     if request.method == 'POST':
         student = request.user
-        print(student)
         for answer in request.POST.lists():
             if answer[0].isdigit():
                 small_question = SmallQuestionPost.objects.get(id=int(answer[0]))
