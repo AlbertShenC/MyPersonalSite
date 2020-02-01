@@ -388,35 +388,11 @@ def create_reading_comprehension_question(request, homework_id):
                                            essay=essay)
         new_big_question.save()
 
-        return redirect(reverse('homework:create_reading_comprehension_small_question', args=[new_big_question.id]))
+        return redirect(reverse('homework:update_small_question',
+                                args=[new_big_question.id])
+                        + '?is_created=1')
     else:
         return render(request, 'homework/update_big_question.html')
-
-
-@login_required(login_url='/user/login/')
-def create_reading_comprehension_small_question(request, big_question_id):
-    if request.method == 'POST':
-        number_offset = request.POST.get('number_offset')
-        stem = request.POST.get('stem')
-        choice_number = int(request.POST.get('choice_number'))
-        reference_answer = request.POST.get('reference_answer')
-        score = request.POST.get('score')
-
-        new_small_question = SmallQuestionPost(big_question=BigQuestionPost.objects.get(id=big_question_id),
-                                               number_offset=number_offset, stem=stem,
-                                               reference_answer=reference_answer,
-                                               score=score)
-        new_small_question.save()
-        for i in range(0, choice_number):
-            ChoicePost(small_question=new_small_question,
-                       choice_stem=chr(ord('A') + i),
-                       choice_text=request.POST.get(chr(ord('A') + i))).save()
-
-        if request.POST.get('add_new_question') == '1':
-            return render(request, 'homework/create_reading_comprehension_small_question.html')
-        return redirect(reverse('homework:homework_detail', args=[new_small_question.big_question.homework.id]))
-    else:
-        return render(request, 'homework/create_reading_comprehension_small_question.html')
 
 
 @login_required(login_url='/user/login/')
@@ -430,34 +406,11 @@ def create_cloze_question(request, homework_id):
                                            essay=essay)
         new_big_question.save()
 
-        return redirect(reverse('homework:create_cloze_small_question', args=[new_big_question.id]))
+        return redirect(reverse('homework:update_small_question',
+                                args=[new_big_question.id])
+                        + '?is_created=1')
     else:
         return render(request, 'homework/update_big_question.html')
-
-
-@login_required(login_url='/user/login/')
-def create_cloze_small_question(request, big_question_id):
-    if request.method == 'POST':
-        number_offset = request.POST.get('number_offset')
-        choice_number = int(request.POST.get('choice_number'))
-        reference_answer = request.POST.get('reference_answer')
-        score = request.POST.get('score')
-
-        new_small_question = SmallQuestionPost(big_question=BigQuestionPost.objects.get(id=big_question_id),
-                                               number_offset=number_offset,
-                                               reference_answer=reference_answer,
-                                               score=score)
-        new_small_question.save()
-        for i in range(0, choice_number):
-            ChoicePost(small_question=new_small_question,
-                       choice_stem=chr(ord('A') + i),
-                       choice_text=request.POST.get(chr(ord('A') + i))).save()
-
-        if request.POST.get('add_new_question') == '1':
-            return render(request, 'homework/create_cloze_small_question.html')
-        return redirect(reverse('homework:homework_detail', args=[new_small_question.big_question.homework.id]))
-    else:
-        return render(request, 'homework/create_cloze_small_question.html')
 
 
 @login_required(login_url='/user/login/')
@@ -481,34 +434,52 @@ def update_big_question(request, big_question_id):
 
 
 @login_required(login_url='/user/login/')
-def update_small_question(request, small_question_id):
+def update_small_question(request, question_id):
     if request.method == 'POST':
         number_offset = request.POST.get('number_offset')
         stem = request.POST.get('stem')
         reference_answer = request.POST.get('reference_answer')
         score = request.POST.get('score')
         choice_number = int(request.POST.get('choice_number'))
+        add_new_question = request.POST.get('add_new_question')
+        # 1表示新建小题，此时question_id是大题的id
+        # 0表示修改小题，此时question_id是小题的id
+        is_created = request.POST.get('is_created')
 
-        small_question = SmallQuestionPost.objects.get(id=small_question_id)
+        if is_created == '1':
+            small_question = SmallQuestionPost(big_question=BigQuestionPost.objects.get(id=question_id))
+        else:
+            small_question = SmallQuestionPost.objects.get(id=question_id)
+            ChoicePost.objects.filter(small_question=small_question.id).delete()
         small_question.number_offset = number_offset
         small_question.stem = stem
         small_question.reference_answer = reference_answer
         small_question.score = score
         small_question.save()
 
-        ChoicePost.objects.filter(small_question=small_question.id).delete()
-
         for i in range(0, choice_number):
             ChoicePost(small_question=small_question,
                        choice_stem=chr(ord('A') + i),
                        choice_text=request.POST.get(chr(ord('A') + i))).save()
 
-        return redirect(reverse('homework:homework_detail', args=[small_question.big_question.homework.id]))
+        if add_new_question == '1':
+            return redirect(reverse('homework:update_small_question',
+                                    args=[small_question.big_question.id])
+                            + '?is_created=1')
+        else:
+            return redirect(reverse('homework:homework_detail', args=[small_question.big_question.homework.id]))
     else:
-        small_question = SmallQuestionPost.objects.get(id=small_question_id)
-        choices = ChoicePost.objects.filter(small_question=small_question_id)
-        context = {
-            'small_question': small_question,
-            'choices': choices
-        }
+        is_created = request.GET.get('is_created')
+        if is_created == '1':
+            context = {
+                'is_created': is_created
+            }
+        else:
+            small_question = SmallQuestionPost.objects.get(id=question_id)
+            choices = ChoicePost.objects.filter(small_question=question_id)
+            context = {
+                'small_question': small_question,
+                'choices': choices,
+                'is_created': is_created
+            }
         return render(request, 'homework/update_small_question.html', context)
