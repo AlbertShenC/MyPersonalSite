@@ -42,18 +42,10 @@ urlpatterns = [
     # 修改选择题
     path('update_choice_question/<int:big_question_id>/', views.update_choice_question, name='update_choice_question'),
 
-    # 添加阅读理解大题
-    path('create_reading_comprehension_question/<int:homework_id>/', views.create_reading_comprehension_question,
-         name='create_reading_comprehension_question'),
-
-    # 添加完形填空大题
-    path('create_cloze_question/<int:homework_id>/', views.create_cloze_question,
-         name='create_cloze_question'),
-
-    # 修改大题
-    path('update_big_question/<int:big_question_id>/', views.update_big_question,
+    # 修改或添加大题
+    path('update_big_question/<int:big_question_or_homework_id>/', views.update_big_question,
          name='update_big_question'),
-    # 修改小题
+    # 修改或添加小题
     path('update_small_question/<int:question_id>/', views.update_small_question,
          name='update_small_question'),
 ]

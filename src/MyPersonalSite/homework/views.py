@@ -378,58 +378,42 @@ def update_choice_question(request, big_question_id):
 
 
 @login_required(login_url='/user/login/')
-def create_reading_comprehension_question(request, homework_id):
+def update_big_question(request, big_question_or_homework_id):
     if request.method == 'POST':
         number = request.POST.get('number')
         essay = request.POST.get('essay')
+        # 1表示新建大题，此时big_question_or_homework_id是作业的id
+        # 0表示修改大题，此时big_question_or_homework_id是大题的id
+        is_created = request.POST.get('is_created')
 
-        new_big_question = BigQuestionPost(homework=HomeworkPost.objects.get(id=homework_id),
-                                           number=number, kind='ReadingComprehension',
-                                           essay=essay)
-        new_big_question.save()
-
-        return redirect(reverse('homework:update_small_question',
-                                args=[new_big_question.id])
-                        + '?is_created=1')
-    else:
-        return render(request, 'homework/update_big_question.html')
-
-
-@login_required(login_url='/user/login/')
-def create_cloze_question(request, homework_id):
-    if request.method == 'POST':
-        number = request.POST.get('number')
-        essay = request.POST.get('essay')
-
-        new_big_question = BigQuestionPost(homework=HomeworkPost.objects.get(id=homework_id),
-                                           number=number, kind='Cloze',
-                                           essay=essay)
-        new_big_question.save()
-
-        return redirect(reverse('homework:update_small_question',
-                                args=[new_big_question.id])
-                        + '?is_created=1')
-    else:
-        return render(request, 'homework/update_big_question.html')
-
-
-@login_required(login_url='/user/login/')
-def update_big_question(request, big_question_id):
-    if request.method == 'POST':
-        number = request.POST.get('number')
-        essay = request.POST.get('essay')
-
-        big_question = BigQuestionPost.objects.get(id=big_question_id)
+        if is_created == '1':
+            big_question = BigQuestionPost(homework=HomeworkPost.objects.get(id=big_question_or_homework_id),
+                                           kind="ReadingComprehension")
+        else:
+            big_question = BigQuestionPost.objects.get(id=big_question_or_homework_id)
         big_question.number = number
         big_question.essay = essay
         big_question.save()
 
-        return redirect(reverse('homework:homework_detail', args=[big_question.homework.id]))
+        # 新建大题，则必定要添加小题
+        if is_created == '1':
+            return redirect(reverse('homework:update_small_question',
+                                    args=[big_question.id])
+                            + '?is_created=1')
+        else:
+            return redirect(reverse('homework:homework_detail', args=[big_question.homework.id]))
     else:
-        big_question = BigQuestionPost.objects.get(id=big_question_id)
-        context = {
-            'big_question': big_question
-        }
+        is_created = request.GET.get('is_created')
+        if is_created == '1':
+            context = {
+                'is_created': is_created
+            }
+        else:
+            big_question = BigQuestionPost.objects.get(id=big_question_or_homework_id)
+            context = {
+                'big_question': big_question,
+                'is_created': is_created
+            }
         return render(request, 'homework/update_big_question.html', context)
 
 

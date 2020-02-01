@@ -98,8 +98,8 @@
             <div class="col-3">
 {#                {% if user == homework.teacher %}#}
                     · <a href="{% url 'homework:create_choice_question' homework.id %}">添加选择题</a>
-                    · <a href="{% url 'homework:create_reading_comprehension_question' homework.id %}">添加阅读理解题</a>
-                    · <a href="{% url 'homework:create_cloze_question' homework.id %}">添加完形填空题</a>
+                    · <a href="{% url 'homework:update_big_question' homework.id %}?is_created=1">添加阅读理解题</a>
+                    · <a href="{% url 'homework:update_big_question' homework.id %}?is_created=1">添加完形填空题</a>
 {#                {% endif %}#}
             </div>
         </div>
