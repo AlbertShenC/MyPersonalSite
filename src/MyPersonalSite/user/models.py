@@ -29,6 +29,10 @@ class Profile(models.Model):
     is_student = models.BooleanField(default=False)
     # 考号
     examination_number = models.CharField(max_length=10, blank=True)
+    # 各种题目默认分数
+    default_choice_score = models.IntegerField(default=2, blank=True)
+    default_reading_comprehension_score = models.IntegerField(default=3, blank=True)
+    default_cloze_score = models.IntegerField(default=2, blank=True)
 
     def __str__(self):
         return 'user{}'.format(self.user.username)

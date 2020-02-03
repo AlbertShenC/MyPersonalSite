@@ -343,6 +343,7 @@ def create_choice_question(request, homework_id):
                                                reference_answer=reference_answer,
                                                score=score)
         new_small_question.save()
+
         for i in range(0, choice_number):
             ChoicePost(small_question=new_small_question,
                        choice_stem=chr(ord('A') + i),
@@ -350,7 +351,15 @@ def create_choice_question(request, homework_id):
 
         return redirect(reverse('homework:homework_detail', args=[homework_id]))
     else:
-        return render(request, 'homework/update_choice_question.html')
+        # 预测新题目的题号（已有题目数+1）
+        number_guess = SmallQuestionPost.objects.filter(big_question__homework=homework_id).count() + 1
+        score_guess = request.user.profile.default_choice_score
+
+        context = {
+            'number': number_guess,
+            'score': score_guess
+        }
+        return render(request, 'homework/update_choice_question.html', context)
 
 
 @login_required(login_url='/user/login/')
@@ -384,10 +393,14 @@ def update_choice_question(request, big_question_id):
         big_question = BigQuestionPost.objects.get(id=big_question_id)
         small_question = SmallQuestionPost.objects.get(big_question=big_question_id)
         choices = ChoicePost.objects.filter(small_question__big_question=big_question_id)
+        number = big_question.number
+        score = small_question.score
         context = {
             'big_question': big_question,
             'small_question': small_question,
-            'choices': choices
+            'choices': choices,
+            'number': number,
+            'score': score
         }
         return render(request, 'homework/update_choice_question.html', context)
 
@@ -420,14 +433,19 @@ def update_big_question(request, big_question_or_homework_id):
     else:
         is_created = request.GET.get('is_created')
         if is_created == '1':
+            # 预测新题目的题号（已有题目数+1）
+            number_guess = SmallQuestionPost.objects.filter(big_question__homework=big_question_or_homework_id).count() + 1
             context = {
-                'is_created': is_created
+                'is_created': is_created,
+                'number': number_guess
             }
         else:
             big_question = BigQuestionPost.objects.get(id=big_question_or_homework_id)
+            number = big_question.number
             context = {
                 'big_question': big_question,
-                'is_created': is_created
+                'is_created': is_created,
+                'number': number
             }
         return render(request, 'homework/update_big_question.html', context)
 
@@ -470,15 +488,20 @@ def update_small_question(request, question_id):
     else:
         is_created = request.GET.get('is_created')
         if is_created == '1':
+            # 预测新题目的题号偏移量（已有题目数）
+            number_offset_guess = SmallQuestionPost.objects.filter(big_question=question_id).count()
             context = {
-                'is_created': is_created
+                'is_created': is_created,
+                'number_offset': number_offset_guess
             }
         else:
             small_question = SmallQuestionPost.objects.get(id=question_id)
             choices = ChoicePost.objects.filter(small_question=question_id)
+            number_offset = small_question.number_offset
             context = {
                 'small_question': small_question,
                 'choices': choices,
-                'is_created': is_created
+                'is_created': is_created,
+                'number_offset': number_offset
             }
         return render(request, 'homework/update_small_question.html', context)
