@@ -10,15 +10,9 @@
         <div class="row col-12">
             <div class="col-9">
 
-                <div class="row col-12">
-                    <div class="col-4"></div>
-                    <div class="col-4">
-                        <h1>
-                            {{ homework.title }}
-                        </h1>
-                    </div>
-                    <div class="col-4"></div>
-                </div>
+                <h2 align="center">
+                    {{ homework.title }}
+                </h2>
 
                 <div class="col-12 alert alert-success">说明：
                     {% if homework.instrument %}
@@ -77,7 +71,7 @@
                                         </div>
                                     {% endif %}
                                     <div class="card-body">
-                                        <pre>{{ big_question.essay }}</pre>
+                                        <p align="justify">{{ big_question.essay|linebreaksbr }}</p>
                                     </div>
                                 {% endif %}
                                 {% for small_question in small_questions %}
@@ -121,6 +115,16 @@
                     <div>· <a href="{% url 'homework:create_choice_question' homework.id %}">添加选择题</a></div>
                     <div>· <a href="{% url 'homework:update_big_question' homework.id %}?is_created=1">添加阅读理解题</a></div>
                     <div>· <a href="{% url 'homework:update_big_question' homework.id %}?is_created=1">添加完形填空题</a></div>
+                {% elif user.profile.is_student %}
+                    <div>
+                        开始时间戳
+                        <div id="start_time"></div>
+                    </div>
+                    <div>
+                        当前时间戳
+                        <div id="now_time"></div>
+                    </div>
+                    <div>离考试结束还有</div>
                 {% endif %}
             </div>
         </div>
@@ -151,7 +155,41 @@
                 }
             })
         }
-    
+
+        var time_start = 0;
+        var time_now = 0;
+        var total_time = {{ homework.total_time_minute }} * 60;
+
+        function start_exam() {
+            $.ajax({
+                type: "GET",
+                url: {% url 'get_time' %},
+                data: {
+                },
+                dataType: "JSON",
+                success: function(result) {
+                    time_start = result.time;
+                    document.getElementById('start_time').innerHTML = time_start;
+                }
+            })
+        }
+
+        function count_down() {
+            start_exam();
+            var set = setInterval(function() {
+                $.ajax({
+                    type: "GET",
+                    url: {% url 'get_time' %},
+                    data: {
+                    },
+                    dataType: "JSON",
+                    success: function(result) {
+                        time_now = result.time;
+                        document.getElementById('now_time').innerHTML = time_now;
+                    }
+                })
+            }, 1000);
+        }
 
     </script>
 {% endblock content %}

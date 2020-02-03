@@ -46,7 +46,7 @@
                             {{ homework.title }}
                         </a>
                     </b>
-                    {% if user.is_teacher or user.is_superuser %}
+                    {% if homework.teacher == user or user.is_superuser %}
                         <a href="{% url 'homework:homework_overview' homework.id %}">作业完成情况总览</a>
                     {% endif %}
                 </h4>

@@ -28,6 +28,8 @@ urlpatterns = [
 
     # 首页
     path('', views.main_page, name='web_main'),
+    # 获取服务器时间戳
+    path('get_time/', views.get_time, name='get_time'),
 
     # 用户
     path('user/', include('user.urls', namespace='user')),

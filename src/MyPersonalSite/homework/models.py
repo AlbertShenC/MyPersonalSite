@@ -54,6 +54,7 @@ class SmallQuestionPost(models.Model):
     stem = models.TextField(default='', blank=True)
     reference_answer = models.TextField(default='', blank=True)
     score = models.IntegerField(default=0)
+    analysis = models.TextField(default='', blank=True)
 
     class Meta:
         ordering = ('-big_question__homework__created',

@@ -11,6 +11,7 @@ from .models import *
 from .forms import *
 from user.models import SchoolClassPost
 
+
 # Create your views here.
 
 
@@ -60,7 +61,7 @@ def homework_detail(request, homework_id):
         'big_questions': big_questions,
         'small_questions': small_questions,
         'choices': choices,
-        'answers': answers
+        'answers': answers,
     }
     return render(request, 'homework/detail.html', context)
 
@@ -166,6 +167,16 @@ def auto_check_answer(homework_id, student_id):
     grade.final_grade = calculate_total_grade(homework_id, student_id)
     grade.save()
     return
+
+
+@login_required(login_url='/user/login/')
+def start_homework(request, homework_id):
+    if request.method == 'POST':
+        return
+    elif request.method == 'GET':
+        return
+    else:
+        return
 
 
 @login_required(login_url='/user/login/')
