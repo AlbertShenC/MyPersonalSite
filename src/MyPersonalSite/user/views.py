@@ -101,3 +101,14 @@ def profile_edit(request, id):
         return render(request, 'user/edit.html', context)
     else:
         return HttpResponse('请求类型不是Post或Get。')
+
+
+# 教师添加修改班级
+@login_required(login_url='/user/login/')
+def update_school_class(request):
+    if request.method == 'POST':
+        return
+    elif request.method == 'GET':
+        return
+    else:
+        return 

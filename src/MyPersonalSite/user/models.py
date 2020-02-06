@@ -7,7 +7,11 @@ from django.contrib.auth.models import User
 
 
 class SchoolClassPost(models.Model):
+    head_teacher = models.ForeignKey(User, on_delete=models.CASCADE,
+                                     related_name='head_teacher', null=True)
+    uu_id = models.UUIDField(auto_created=True)
     name = models.TextField(default='')
+    bio = models.TextField(default='', blank=True)
 
     class Meta:
         ordering = ('name',)

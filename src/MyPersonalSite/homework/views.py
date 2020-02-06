@@ -122,6 +122,17 @@ def homework_update(request, homework_id):
 
 
 @login_required(login_url='/user/login/')
+def homework_add_class(request):
+    if request.method == 'POST':
+        return
+    elif request.method == 'GET':
+        return
+    else:
+        return
+
+
+
+@login_required(login_url='/user/login/')
 def homework_delete(request, homework_id):
     if request.method == 'POST':
         homework = HomeworkPost.objects.get(id=homework_id)
@@ -167,16 +178,6 @@ def auto_check_answer(homework_id, student_id):
     grade.final_grade = calculate_total_grade(homework_id, student_id)
     grade.save()
     return
-
-
-@login_required(login_url='/user/login/')
-def start_homework(request, homework_id):
-    if request.method == 'POST':
-        return
-    elif request.method == 'GET':
-        return
-    else:
-        return
 
 
 @login_required(login_url='/user/login/')
@@ -505,3 +506,4 @@ def update_small_question(request, question_id):
                 'number_offset': number_offset
             }
         return render(request, 'homework/update_small_question.html', context)
+

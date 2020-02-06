@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from user.models import SchoolClassPost
 
 # Create your models here.
 
@@ -16,8 +17,9 @@ class HomeworkColumn(models.Model):
 
 # 作业表
 class HomeworkPost(models.Model):
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='homeworks')
-    column = models.ForeignKey(HomeworkColumn, on_delete=models.CASCADE, related_name='homeworks')
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='homework')
+    column = models.ForeignKey(HomeworkColumn, on_delete=models.CASCADE, related_name='homework')
+    school_class = models.ManyToManyField(SchoolClassPost, related_name='homework')
     title = models.TextField(default='')
     instrument = models.TextField(default='', blank=True)
     total_time_minute = models.IntegerField(default=0)
@@ -34,7 +36,7 @@ class HomeworkPost(models.Model):
 
 # 大题表：一道单选/一道多选/一篇阅读/一篇完型
 class BigQuestionPost(models.Model):
-    homework = models.ForeignKey(HomeworkPost, on_delete=models.CASCADE, related_name='big_questions')
+    homework = models.ForeignKey(HomeworkPost, on_delete=models.CASCADE, related_name='big_question')
     number = models.IntegerField(default=1)
     kind = models.TextField(default='SingleChoice')
     essay = models.TextField(default='', blank=True)
@@ -49,7 +51,7 @@ class BigQuestionPost(models.Model):
 
 # 小题表：一道单选/一道多选，阅读/完型的一小道题
 class SmallQuestionPost(models.Model):
-    big_question = models.ForeignKey(BigQuestionPost, on_delete=models.CASCADE, related_name='small_questions')
+    big_question = models.ForeignKey(BigQuestionPost, on_delete=models.CASCADE, related_name='small_question')
     number_offset = models.IntegerField(default=0)
     stem = models.TextField(default='', blank=True)
     reference_answer = models.TextField(default='', blank=True)
@@ -70,7 +72,7 @@ class SmallQuestionPost(models.Model):
 
 # 选项表：一个选项
 class ChoicePost(models.Model):
-    small_question = models.ForeignKey(SmallQuestionPost, on_delete=models.CASCADE, related_name='choices')
+    small_question = models.ForeignKey(SmallQuestionPost, on_delete=models.CASCADE, related_name='choice')
     # 选项A、B、C等
     choice_stem = models.CharField(default='A', max_length=1)
     # 选项文本
@@ -91,7 +93,7 @@ class ChoicePost(models.Model):
 
 # 答案表
 class AnswerPost(models.Model):
-    small_question = models.ForeignKey(SmallQuestionPost, on_delete=models.CASCADE, related_name='answers')
+    small_question = models.ForeignKey(SmallQuestionPost, on_delete=models.CASCADE, related_name='answer')
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answers')
     answer_text = models.TextField(default='', blank=True)
     final_grade = models.IntegerField(default=0)
@@ -111,8 +113,8 @@ class AnswerPost(models.Model):
 
 # 成绩表
 class GradePost(models.Model):
-    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='grades')
-    homework = models.ForeignKey(HomeworkPost, on_delete=models.CASCADE, related_name='grades')
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='grade')
+    homework = models.ForeignKey(HomeworkPost, on_delete=models.CASCADE, related_name='grade')
     final_grade = models.IntegerField(default=0)
 
     class Meta:
