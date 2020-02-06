@@ -7,7 +7,7 @@ from . import views
 app_name = 'blog'
 
 urlpatterns = [
-    path('', views.blog_main, name='blog_main'),
+    path('', views.blog_list, name='blog_main'),
     path('list/', views.blog_list, name='blog_list'),
     path('detail/<int:blog_id>/', views.blog_detail, name='blog_detail'),
     path('create/', views.blog_create, name='blog_create'),

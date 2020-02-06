@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 import notifications.urls
-from . import views
+from blog.views import blog_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,7 +27,7 @@ urlpatterns = [
     path('intro/', include('intro.urls', namespace='intro')),
 
     # 首页
-    path('', views.main_page, name='web_main'),
+    path('', blog_list, name='home'),
 
     # 用户
     path('user/', include('user.urls', namespace='user')),
@@ -46,6 +46,9 @@ urlpatterns = [
 
     # 通知
     path('notice/', include('notice.urls', namespace='notice')),
+
+    # 第三方登陆
+    path('accounts/', include('allauth.urls')),
 ]
 
 
