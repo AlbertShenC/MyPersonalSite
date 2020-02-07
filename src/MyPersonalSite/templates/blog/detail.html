@@ -68,9 +68,9 @@
                 {% else %}
                     <br>
                     <h5 class="row justify-content-center">
-                        请<a href="{% url 'user:user_login' %}">登录</a>后回复
+                        请<a href="{% url 'account_login' %}">登录</a>后回复
                     </h5>
-                    <br>comment_form
+                    <br>
                 {% endif %}
 
                 {% load mptt_tags %}
@@ -120,7 +120,7 @@
                                     </button>
                                     {% else %}
                                     <a class="btn btn-light btn-sm text-muted"
-                                       href="{% url 'user:user_login' %}"
+                                       href="{% url 'account_login' %}"
                                        >
                                         回复
                                     </a>
