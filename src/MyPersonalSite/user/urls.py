@@ -7,7 +7,8 @@ from . import views
 app_name = 'user'
 
 urlpatterns = [
-    path('logout/', views.user_logout, name='user_logout'),
+    path('login_validate/', views.login_validate, name='login_validate'),
+    path('signup_validate/', views.signup_validate, name='signup_validate'),
     path('delete/<int:id>', views.user_delete, name='user_delete'),
     path('edit/<int:id>', views.profile_edit, name='profile_edit'),
 ]

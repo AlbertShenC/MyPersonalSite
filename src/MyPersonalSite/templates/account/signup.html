@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %}注册{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="col-6">
+                <form class="login" id="login_form" method="POST" action="{% url 'account_signup' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_username">用户名：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="username" placeholder="请输入用户名" autofocus="autofocus"
+                                   minlength="1" maxlength="150" required id="id_username" class="form-control">
+                            <small class="form-text text-muted ml-1">
+                                已有账号？点击
+                                <a href="{% url 'account_login' %}" style="color: cornflowerblue; ">
+                                    这里登陆
+                                </a>
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_email" class="layui-form-label">E-mail：</label>
+                        <input type="email" name="email" placeholder="请输入邮箱地址" required id="id_email"
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="id_password1" class="layui-form-label">密码：</label>
+                        <input type="password" name="password1" placeholder="8位或以上字母/数字组合" required
+                               id="id_password1" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="id_password2" class="layui-form-label">确认密码：</label>
+                        <input type="password" name="password2" placeholder="再次输入密码" required
+                               id="id_password2" class="form-control">
+                    </div>
+                    <button class="primaryAction btn btn-primary" type="submit" hidden id="submit_signup">注册</button>
+                    <button class="primaryAction btn btn-primary" type="button" id="signup_validation">注册</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'csrf.js' %}"></script>
+<script>
+function show_error(error_input, error_string) {
+    error_input.addClass('breath-input');
+    layer.tips(error_string, error_input, {
+        time: 4000,
+        area: ['auto', 'auto'],
+        tips: [2, 'indianred'],
+        tipsMore: true
+    });
+}
+
+const signup_validation = $('#signup_validation');
+signup_validation.on('click', function (event){
+    const username_input = $('#id_username');
+    if(username_input.val() === ''){
+        show_error(username_input, '请填写用户名');
+        return;
+    }
+    const email_input = $('#id_email');
+    if(email_input.val() === ''){
+        show_error(email_input, '请填写邮箱');
+        return;
+    }
+    const password1_input = $('#id_password1');
+    if(password1_input.val() === ''){
+        show_error(password1_input, '请填写密码');
+        return;
+    }
+    const password2_input = $('#id_password2');
+    if(password2_input.val() === ''){
+        show_error(password2_input, '请填写确认密码');
+        return;
+    }
+    if(password1_input.val() !== password2_input.val()){
+        show_error(password2_input, '两次密码不同')
+        return;
+    }
+
+    signup_validation.attr('disabled', 'disabled').empty().append('注册中.. ');
+    $.ajax({
+        url: "{% url 'user:signup_validate' %}",
+        type: 'POST',
+        data: {
+            'id_username': username_input.val(),
+            'id_email': email_input.val(),
+            'id_password1': password1_input.val(),
+            'id_password2': password2_input.val()
+        },
+        dataType: "JSON",
+        success: function (result) {
+            if(result.code === "OK"){
+                $('#submit_signup').click();
+            } else{
+                signup_validation.removeAttr('disabled').empty().append('注册');
+                layer.msg(result.message);
+            }
+        }
+    });
+});
+</script>
+
+{% endblock %}

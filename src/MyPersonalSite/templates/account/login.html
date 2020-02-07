@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% load i18n %}
 {% load account socialaccount %}
 {% block title %}登录{% endblock %}
@@ -10,24 +11,19 @@
             <br>
             {% get_providers as socialaccount_providers %}
             {% if socialaccount_providers %}
-            <p>
-                {% blocktrans with site.name as site_name %}请登录已有本地账号或<a href="{{ signup_url }}">注册</a>新账号。
-                也可以通过第三方登录:{% endblocktrans %}
-            </p>
-
-            <div class="socialaccount_ballot">
-                <h5 class="mb-2 mt-4">第三方登录：</h5>
-                <ul class="socialaccount_providers">
-                  {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-                </ul>
-                <h5 class="mb-2 mt-4">本地登录：</h5>
-            </div>
-
-            {% include "socialaccount/snippets/login_extra.html" %}
-
+                <div class="socialaccount_ballot">
+                    <h5 class="mb-2 mt-4">第三方登录：</h5>
+                    <i class="fab fa-github"
+                        style="font-size: 3em; color: dimgray;"></i>
+                    <ul class="socialaccount_providers">
+                      {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                    </ul>
+                    <h5 class="mb-2 mt-4">本地登录：</h5>
+                </div>
+                {% include "socialaccount/snippets/login_extra.html" %}
             {% else %}
-            <p>{% blocktrans %}If you have not created an account yet, then please
-            <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+                <p>{% blocktrans %}If you have not created an account yet, then please
+                <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
             {% endif %}
             <div class="col-6">
                 <form class="login" id="login_form" method="POST" action="{% url 'account_login' %}">
@@ -61,10 +57,37 @@
                             保持登录
                         </label>
                     </div>
-                    <button class="primaryAction btn btn-primary" type="submit" id="submit_login">确认</button>
+                    <button class="primaryAction btn btn-primary" type="submit" hidden id="submit_login">登录</button>
+                    <button class="primaryAction btn btn-primary" type="button" id="login_validation">登录</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script src="{% static 'csrf.js' %}"></script>
+<script>
+const login_validation = $('#login_validation');
+login_validation.on('click', function (event){
+    login_validation.attr('disabled', 'disabled').empty().append('登录中.. ');
+
+    $.ajax({
+        url: "{% url 'user:login_validate' %}",
+        type: 'POST',
+        data: {
+            'id_login': $('#id_login').val(),
+            'id_password': $('#id_password').val()
+        },
+        dataType: "JSON",
+        success: function (result) {
+            if(result.code === "OK"){
+                $('#submit_login').click();
+            } else{
+                login_validation.removeAttr('disabled').empty().append('登录');
+                layer.msg(result.message);
+            }
+        }
+    });
+});
+</script>
 {% endblock %}
