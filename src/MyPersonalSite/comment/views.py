@@ -11,7 +11,7 @@ from .models import Comment
 
 # Create your views here.
 
-@login_required(login_url='/user/login/')
+@login_required(login_url='/accounts/login/')
 def post_comment(request, blog_id, parent_comment_id=None):
     blog = get_object_or_404(BlogPost, id=blog_id)
 

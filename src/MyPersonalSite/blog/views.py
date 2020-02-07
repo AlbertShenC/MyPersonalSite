@@ -79,7 +79,7 @@ def blog_like(request, blog_id):
         return HttpResponse('仅支持POST请求')
 
 
-@login_required(login_url='/user/login/')
+@login_required(login_url='/accounts/login/')
 def blog_create(request):
     if request.method == 'POST':
         blog_post_form = BlogPostForm(request.POST, request.FILES)
@@ -100,7 +100,7 @@ def blog_create(request):
         return render(request, 'blog/create.html', context)
 
 
-@login_required(login_url='/user/login/')
+@login_required(login_url='/accounts/login/')
 def blog_update(request, blog_id):
     blog = BlogPost.objects.get(id=blog_id)
 
@@ -137,7 +137,7 @@ def blog_update(request, blog_id):
         return render(request, 'blog/update.html', context)
 
 
-@login_required(login_url='/user/login/')
+@login_required(login_url='/accounts/login/')
 def blog_delete(request, blog_id):
     if request.method == 'POST':
         blog = BlogPost.objects.get(id=blog_id)

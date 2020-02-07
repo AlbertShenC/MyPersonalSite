@@ -35,9 +35,6 @@ urlpatterns = [
     # 博客
     path('blog/', include('blog.urls', namespace='blog')),
 
-    # 密码重置
-    path('password_reset/', include('password_reset.urls')),
-
     # 评论
     path('comment/', include('comment.urls', namespace='comment')),
 
@@ -47,7 +44,7 @@ urlpatterns = [
     # 通知
     path('notice/', include('notice.urls', namespace='notice')),
 
-    # 第三方登陆
+    # 第三方登陆，用户注册登陆，密码重置等功能，allauth库
     path('accounts/', include('allauth.urls')),
 ]
 
