@@ -69,6 +69,16 @@ def blog_detail(request, blog_id):
     return render(request, 'blog/detail.html', context)
 
 
+def blog_like(request, blog_id):
+    if request.method == 'POST':
+        blog = BlogPost.objects.get(id=blog_id)
+        blog.likes += 1
+        blog.save()
+        return HttpResponse('success')
+    else:
+        return HttpResponse('仅支持POST请求')
+
+
 @login_required(login_url='/user/login/')
 def blog_create(request):
     if request.method == 'POST':

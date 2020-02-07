@@ -29,6 +29,25 @@
                 </div>
                 <hr>
 
+                <div style="text-align:center;" class="mt-4">
+                    <button class="btn btn-outline-danger"
+                            type="button"
+                            onclick="validate_is_like(
+                                     '{% url 'blog:blog_like' blog.id %}',
+                                     {{ blog.id }},
+                                     {{ blog.likes }}
+                                     )"
+                            >
+                        <span>点赞</span>
+                        <span>
+                            <i class="fas fa-heart"></i>
+                        </span>
+                        <span id="likes_number">
+                            {{ blog.likes }}
+                        </span>
+                    </button>
+                </div>
+
                 {% if user.is_authenticated %}
                     <div>
                         <form action="{% url 'comment:post_comment' blog.id %}" method="POST">
@@ -175,7 +194,7 @@
                     comment_id +
                     '"></iframe>';
                 $(modal_body).append(content);
-            };
+            }
             $(modal_id).modal('show');
         }
 
@@ -185,10 +204,69 @@
             next_url = next_url.charAt(next_url.length - 1) == '/' ? next_url.slice(0, -1) : next_url;
             // 刷新并定位到锚点
             window.location.replace(next_url + "#comment_elem_" + new_comment_id);
-        };
+        }
     </script>
 
     <script src="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.js' %}"></script>
+
+    <script src="{% static 'csrf.js' %}"></script>
+    <script>
+        function validate_is_like(url, id, likes) {
+            let storage = window.localStorage;
+            const storage_str_data = storage.getItem("my_blog_data");
+            let storage_json_data = JSON.parse(storage_str_data);
+            if (!storage_json_data) {
+                storage_json_data = {};
+            }
+            const status = check_status(storage_json_data, id);
+            if (status) {
+                layer.msg('已经点过赞了哟~');
+                return;
+            } else {
+                $('span#likes_number').text(likes + 1).css('color', '#dc3545');
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {},
+                success: function(result){
+                    if(result === 'success'){
+                        try {
+                            storage_json_data[id] = true;
+                        } catch (e) {
+                            window.localStorage.clear();
+                        }
+                        const d = JSON.stringify(storage_json_data);
+                        try {
+                            storage.setItem("my_blog_data", d);
+                        } catch (e) {
+                            if (e.code === 22) {
+                                window.localStorage.clear();
+                                storage.setItem("my_blog_data", d);
+                            }
+                        }
+                    } else {
+                        layer.msg("与服务器通信失败..过一会儿再试试呗~");
+                    }
+                }
+            });
+        }
+
+        function check_status(data, id) {
+            try {
+                if (id in data && data[id]) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (e) {
+                window.localStorage.clear();
+                return false;
+            }
+        }
+    </script>
+
     <link rel="stylesheet" href="{% static 'prism/prism.css' %}">
 {% endblock content %}
 
