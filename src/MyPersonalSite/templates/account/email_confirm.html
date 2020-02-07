@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load account %}
+{% block title %}确认邮箱{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <br>
+            <h1>确认邮箱地址</h1>
+            {% if confirmation %}
+                {% user_display confirmation.email_address.user as user_display %}
+                <p>{% blocktrans with confirmation.email_address.email as email %}请确认邮箱
+                    <a href="mailto:{{ email }}">{{ email }}</a>是用户{{ user_display }}的邮箱地址。{% endblocktrans %}</p>
+                <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+                {% csrf_token %}
+                    <button class="primaryAction btn btn-primary" type="submit">{% trans '确认并登录' %}</button>
+                </form>
+            {% else %}
+                {% url 'account_email' as email_url %}
+                <p>{% blocktrans %}此邮箱确认链接已过期或无效。请 <a href="{{ email_url }}">输入注册时使用的账号密码以发送新的确认邮件</a>.{% endblocktrans %}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

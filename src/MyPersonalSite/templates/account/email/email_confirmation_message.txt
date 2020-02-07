@@ -1,0 +1,14 @@
+{% load account %}{% user_display user as user_display %}{% load i18n %}{% autoescape off %}{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}来自 Albert 的问好！
+
+这是一封验证邮件
+
+用户 {{ user_display }} 正在尝试使用此邮箱注册账号，此邮件有效期24小时，请及时确认。
+
+验证邮箱请点击链接： {{ activate_url }}
+
+若您从未在此站点注册，请忽略此邮件。
+
+{% endblocktrans %}
+{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}感谢您的注册！
+{% endblocktrans %}
+{% endautoescape %}

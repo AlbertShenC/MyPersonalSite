@@ -4,59 +4,82 @@ from django.shortcuts import render
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
-from .forms import UserLoginForm, UserRegisterForm, ProfileForm
+from .forms import ProfileForm
 from .models import Profile
 from django.contrib.auth.decorators import login_required
 
 
-def user_register(request):
+def login_validate(request):
     if request.method == 'POST':
-        user_register_form = UserRegisterForm(data=request.POST)
-        if user_register_form.is_valid():
-            new_user = user_register_form.save(commit=False)
-            new_user.set_password(user_register_form.cleaned_data.get('password'))
-            new_user.save()
-            login(request, new_user)
-            return redirect('blog:blog_list')
+        id_login = request.POST.get('id_login')
+        id_password = request.POST.get('id_password')
+        # 使用用户名登陆
+        if id_login.find('@') == -1:
+            user = User.objects.filter(username=id_login)
+        # 使用邮箱登陆
         else:
-            return HttpResponse('注册信息错误。')
-    elif request.method == 'GET':
-        user_register_form = UserRegisterForm()
-        context = {'user_register_form': user_register_form}
-        return render(request, 'user/register.html', context)
+            user = User.objects.filter(email=id_login)
+        # 验证密码
+        if len(user) == 1 and user[0].check_password(id_password):
+            return JsonResponse({
+                'code': 'OK'
+            })
+        else:
+            return JsonResponse({
+                'code': 'ERROR',
+                'message': '账号或密码错误'
+            })
     else:
-        return HttpResponse('请求类型不是Post或Get。')
+        return JsonResponse({
+            'code': 'ERROR',
+            'message': '为安全起见，仅支持POST请求'
+        })
 
 
-def user_login(request):
+def signup_validate(request):
     if request.method == 'POST':
-        user_login_form = UserLoginForm(data=request.POST)
-        if user_login_form.is_valid():
-            data = user_login_form.cleaned_data
-            user = authenticate(username=data.get('username'), password=data.get('password'))
-            if user:
-                login(request, user)
-                return redirect('blog:blog_list')
-            else:
-                return HttpResponse('账号或密码错误。')
-        else:
-            return HttpResponse('账号或密码错误')
-    elif request.method == 'GET':
-        user_login_form = UserLoginForm()
-        context = {'user_login_form': user_login_form}
-        return render(request, 'user/login.html', context)
+        id_username = request.POST.get('id_username')
+        id_email = request.POST.get('id_email')
+        id_password1 = request.POST.get('id_password1')
+        id_password2 = request.POST.get('id_password2')
+        if not id_username.isalnum():
+            return JsonResponse({
+                'code': 'ERROR',
+                'message': '用户名仅能使用字母及数字'
+            })
+        if id_email.find('@') == -1:
+            return JsonResponse({
+                'code': 'ERROR',
+                'message': '邮箱格式错误'
+            })
+        if id_password1 != id_password2:
+            return JsonResponse({
+                'code': 'ERROR',
+                'message': '两次输入的密码不相同'
+            })
+        if len(User.objects.filter(username=id_username)) != 0:
+            return JsonResponse({
+                'code': 'ERROR',
+                'message': '用户名已存在'
+            })
+        if len(User.objects.filter(email=id_email)) != 0:
+            return JsonResponse({
+                'code': 'ERROR',
+                'message': '邮箱已存在'
+            })
+        return JsonResponse({
+            'code': 'OK'
+        })
     else:
-        return HttpResponse('请求类型不是Post或Get。')
+        return JsonResponse({
+            'code': 'ERROR',
+            'message': '为安全起见，仅支持POST请求'
+        })
 
 
-def user_logout(request):
-    logout(request)
-    return redirect('blog:blog_list')
-
-
-@login_required(login_url='user/login/')
+@login_required(login_url='/accounts/login/')
 def user_delete(request, id):
     if request.method == 'POST':
         user = User.objects.get(id=id)
@@ -70,7 +93,7 @@ def user_delete(request, id):
         return HttpResponse('请求类型不是Post。')
 
 
-@login_required(login_url='/user/login/')
+@login_required(login_url='/accounts/login/')
 def profile_edit(request, id):
     user = User.objects.get(id=id)
     if Profile.objects.filter(user_id=id).exists():

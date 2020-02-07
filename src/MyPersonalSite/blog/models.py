@@ -20,6 +20,7 @@ class BlogPost(models.Model):
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now=True)
     total_views = models.PositiveIntegerField(default=0)
+    likes = models.PositiveIntegerField(default=0)
 
     column = models.ForeignKey(
         BlogColumn,

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
 
-@login_required(login_url='/user/login/')
+@login_required(login_url='/accounts/login/')
 def comment_notice_list(request):
     notices_unread = request.user.notifications.unread()
     notices_read = request.user.notifications.read()
@@ -18,7 +18,7 @@ def comment_notice_list(request):
     return render(request, 'notice/list.html', context)
 
 
-@login_required(login_url='/user/login/')
+@login_required(login_url='/accounts/login/')
 def comment_notice_update(request):
     notice_id = request.GET.get('notice_id')
     if notice_id:
