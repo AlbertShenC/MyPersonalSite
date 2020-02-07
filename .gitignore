@@ -142,3 +142,6 @@ src/MyPersonalSite/user/migrations/*
 !src/MyPersonalSite/user/migrations/__init__.py
 
 !src/MyPersonalSite/static/ckeditor/ckeditor/plugins/prism/lib/
+
+src/MyPersonalSite/logs/*
+!src/MyPersonalSite/logs/temp.txt

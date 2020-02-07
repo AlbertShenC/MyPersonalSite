@@ -52,7 +52,6 @@ INSTALLED_APPS = [
 
     # 可添加需要的第三方登录
     'allauth.socialaccount.providers.github',
-    'allauth.socialaccount.providers.weibo',
 
     'blog',
     'comment',
@@ -123,6 +122,7 @@ TEMPLATES = [
     },
 ]
 
+# allauth设置
 AUTHENTICATION_BACKENDS = (
     # Django 后台可独立于 allauth 登录
     'django.contrib.auth.backends.ModelBackend',
@@ -131,8 +131,47 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+# 设置站点
+SITE_ID = 1
+
+# 登录成功后重定向地址
+LOGIN_REDIRECT_URL = '/'
+
+# 注册本地账号时必须使用邮箱
+ACCOUNT_EMAIL_REQUIRED = True
+
+# 注册本地账号时必须邮箱验证通过才有效
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
+# 第三方登陆时无需验证邮箱
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# 指定登陆方式：账号或邮箱
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+
 WSGI_APPLICATION = 'MyPersonalSite.wsgi.application'
 
+# 日志功能
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'when': 'midnight',
+            'backupCount': 30,
+            'filename': os.path.join(BASE_DIR, 'logs/debug.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -176,12 +215,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-# 设置站点
-SITE_ID = 1
-
-# 登录成功后重定向地址
-LOGIN_REDIRECT_URL = '/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

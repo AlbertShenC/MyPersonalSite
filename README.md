@@ -40,7 +40,7 @@
 
   - 本机测试
 
-    输入命令：python manage.py runserver
+    输入命令：python manage.py runserver --noreload
 
     出现如下结果，说明运行成功，可通过本地浏览器访问127.0.0.1:8000访问网站。
 
@@ -48,7 +48,7 @@
 
   - 服务器运行
 
-    输入命令：python manage.py runserver 0.0.0.0:80
+    输入命令：python manage.py runserver 0.0.0.0:80 --noreload
 
     出现如下结果，说明运行成功，可通过任意电脑访问。
 
@@ -67,3 +67,4 @@
 ![image-20200126162347327](assets/image-20200126162347327.png)
 
 本项目目前只实现了博客网站的常用功能，后续将逐渐添加其他功能，并提高安全性和界面美观程度。
+
