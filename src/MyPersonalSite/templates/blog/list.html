@@ -7,132 +7,131 @@
 
 {% block content %}
 <div class="container">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{% url 'blog:blog_list' %}?search={{ search }}&column={{ column }}&tag={{ tag }}">
-                    最新
-                </a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{% url 'blog:blog_list' %}?order=total_views&search={{ search }}&column={{ column }}&tag={{ tag }}">
-                    最热
-                </a>
-            </li>
-        </ol>
-    </nav>
-
     <div class="row">
-        <div class="col-auto mr-auto">
-            <form class="form-inline" >
-                <label class="sr-only">content</label>
-                <input type="text" class="form-control mb-2 mr-sm-2" name="search"
-                    placeholder="搜索文章..." required>
-            </form>
-        </div>
-    </div>
+        <div class="col-12 col-lg-9">
 
-    {% if search %}
-        {% if blogs %}
-            <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
-            <hr>
-        {% else %}
-            <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
-            <hr>
-        {% endif %}
-    {% endif %}
+            <div class="mr-auto">
+                <form class="form-inline" >
+                    <label class="sr-only">content</label>
+                    <input type="text" class="form-control mb-2 mr-sm-2" name="search"
+                        placeholder="搜索文章..." required>
+                </form>
+            </div>
 
-    <div class="row mt-2">
-        {% for blog in blogs %}
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background-color: white; padding: 0 0 0 2px; font-size: 0.9em">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'blog:blog_list' %}?search={{ search }}&column={{ column }}&tag={{ tag }}">
+                            <span style="color: dimgray">最新</span>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'blog:blog_list' %}?order=total_views&search={{ search }}&column={{ column }}&tag={{ tag }}">
+                            <span style="color: dimgray">最热</span>
+                        </a>
+                    </li>
+                </ol>
+            </nav>
 
-            {% if blog.avatar %}
-                <div class="col-3">
-                    <img src="{{ blog.avatar.url }}"
-                         alt="avatar"
-                         style="max-width:100%; border-radius: 20px"
-                    >
-                </div>
+            {% if search %}
+                {% if blogs %}
+                    <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+                    <hr>
+                {% else %}
+                    <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
+                    <hr>
+                {% endif %}
             {% endif %}
 
-            <div class="col">
-                {% if blog.column %}
-                    <a href="{% url 'blog:blog_list' %}?column={{ blog.column.id }}"
-                       role="button" class="btn btn-sm hvr-pop btn-outline-secondary">
-                        {{ blog.column }}
-                    </a>
-                {% endif %}
-
-                <span>
-                    {% for tag in blog.tags.all %}
-                        <a href="{% url 'blog:blog_list' %}?tag={{ tag }}"
-                           class="badge badge-secondary"
-                        >
-                            {{ tag }}
-                        </a>
-                    {% endfor %}
-                </span>
-
-                <h4>
-                    <b>
-                        <a href="{% url 'blog:blog_detail' blog.id %}"
-                           style="color: black;">
-                            {{ blog.title }}
-                        </a>
-                    </b>
-                </h4>
-
-                <div>
-                    <p style="color: gray;">
-                        {{ blog.body|slice:'100' }}...
-                    </p>
+            {% for blog in blogs %}
+                <div class="card mb-2 hvr-glow" style="display: flex">
+                    <div class="row no-gutters align-items-center">
+                        {% if blog.avatar %}
+                            <div class="col-4 d-none d-md-block" style="overflow: hidden">
+                                <img src="{{ blog.avatar.url }}" class="card-img hvr-grow"
+                                     alt="avatar"
+                                     style="transition-duration: 1s;"
+                                >
+                            </div>
+                        {% endif %}
+                        <div class="col">
+                            <div class="card-body">
+                                <h4 class="mt-0">
+                                    <a href="{% url 'blog:blog_detail' blog.id %}"
+                                       class="hvr-forward no-underline"
+                                       style="font-weight: bold; color: black;">
+                                        {{ blog.title }}
+                                    </a>
+                                </h4>
+                                <div class="mb-2">
+                                    {% if blog.column %}
+                                        <a href="{% url 'blog:blog_list' %}?column={{ blog.column.id }}"
+                                           role="button" class="btn btn-sm hvr-pop btn-outline-secondary">
+                                            {{ blog.column }}
+                                        </a>
+                                        {% for tag in blog.tags.all %}
+                                            <a href="{% url 'blog:blog_list' %}?tag={{ tag }}"
+                                               class="badge badge-pill badge-light hvr-float-shadow"
+                                               style="color: grey"
+                                            >
+                                                {{ tag }}
+                                            </a>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="mb-0 text-monospace" style="color: grey;">
+                                    <span>
+                                        <i class="fas fa-eye" style="color: lightskyblue;"></i>
+                                        {{ blog.total_views }}&nbsp;
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-comments" style="color: yellowgreen;"></i>
+                                        {{ blog.comments.count }}&nbsp;
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-heart" style="color: pink;"></i>
+                                        {{ blog.likes }}&nbsp;
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-clock" style="color: pink;"></i>
+                                        {{ blog.created|date:'Y-m-d' }}&nbsp;
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            {% endfor %}
 
-                <p>
-                    <span style="color: green;">
-                        {{ blog.total_views }} 浏览&nbsp;&nbsp;&nbsp;
+            <div class="pagination row">
+                <div class="m-auto">
+                    <span class="step-links">
+                        {% if blogs.has_previous %}
+                            <a href="?page=1&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-success">&laquo; 1</a>
+                                &laquo; 1
+                            </a>
+                            <span>...</span>
+                            <a href="?page={{ blogs.previous_page_number }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-secondary">
+                                {{ blogs.previous_page_number }}
+                            </a>
+                        {% endif %}
+
+                        <span class="current btn btn-danger btn-lg">
+                            {{ blogs.number }}
+                        </span>
+
+                        {% if blogs.has_next %}
+                            <a href="?page={{ blogs.next_page_number }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-secondary">
+                                {{ blogs.next_page_number }}
+                            </a>
+                            <span>...</span>
+                            <a href="?page={{ blogs.paginator.num_pages }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-success">
+                                {{ blogs.paginator.num_pages }} &raquo;
+                            </a>
+                        {% endif %}
                     </span>
-                    <span style="color: red;">
-                        {{ blog.comments.count }} 评论&nbsp;&nbsp;&nbsp;
-                    </span>
-                    <span style="color: blue;">
-                        {{ blog.created|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
-                    </span>
-                    <span style="color: darkred;">
-                        {{ blog.updated|date:'Y-m-d' }} 更新
-                    </span>
-                </p>
+                </div>
             </div>
-            <hr style="width: 100%;"/>
-        {% endfor %}
-    </div>
-
-    <div class="pagination row">
-        <div class="m-auto">
-            <span class="step-links">
-                {% if blogs.has_previous %}
-                    <a href="?page=1&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-success">&laquo; 1</a>
-                        &laquo; 1
-                    </a>
-                    <span>...</span>
-                    <a href="?page={{ blogs.previous_page_number }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-secondary">
-                        {{ blogs.previous_page_number }}
-                    </a>
-                {% endif %}
-
-                <span class="current btn btn-danger btn-lg">
-                    {{ blogs.number }}
-                </span>
-
-                {% if blogs.has_next %}
-                    <a href="?page={{ blogs.next_page_number }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-secondary">
-                        {{ blogs.next_page_number }}
-                    </a>
-                    <span>...</span>
-                    <a href="?page={{ blogs.paginator.num_pages }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-success">
-                        {{ blogs.paginator.num_pages }} &raquo;
-                    </a>
-                {% endif %}
-            </span>
         </div>
     </div>
 </div>
