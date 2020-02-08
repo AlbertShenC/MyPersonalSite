@@ -1,31 +1,42 @@
 {% load notifications_tags %}
 {% notifications_unread as unread_count %}
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-    <a class="navbar-brand" href="/">Albert 的个人网站</a>
-    <div class="collapse navbar-collapse">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link mr-2" href="{% url 'blog:blog_list' %}">文章</a>
+<nav class="navbar navbar-expand-md bg-white fixed-top blog-navbar py-md-0 headroom">
+    <a class="navbar-brand d-md-none d-lg-block" id="site-logo-name" href="/">
+        <strong class="px-2">Albert 的个人网站</strong>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="fa fa-align-justify"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+{#            文章导航#}
+            <li class="nav-item mr-2">
+                {% url 'blog:blog_list' as list_url %}
+                <a class="quiet nav-link py-md-3 {% if request.path == list_url %}active{% endif %}" href="{{ list_url }}">
+                    <i class="fa fa-home mr-1"></i>
+                    文章
+                </a>
             </li>
         </ul>
-        <ul class="navbar-nav ml-md-auto" style="margin: -5px 0 -5px 0;">
+        <ul class="navbar-nav">
             {% if user.is_authenticated %}
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="quiet nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {% if unread_count %}
-                        <svg viewBox="0 0 8 8" width="8px" height="8px">
-                            <circle cx="4" cy="4" r="4" fill="#ff6b6b"></circle>
-                        </svg>
+                    <svg viewBox="0 0 8 8" width="8px" height="8px">
+                        <circle cx="4" cy="4" r="4" fill="#ff6b6b"></circle>
+                    </svg>
                     {% endif %}
                     {{ user.username }}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href='{% url "user:profile_edit" user.id %}'>个人信息</a>
                     <a class="dropdown-item" href="{% url "notice:comment_notice_list" %}">通知
-                        {% if unread_count %}
-                            <span class="badge badge-danger">{{ unread_count }}</span>
-                        {% endif %}
+                    {% if unread_count %}
+                    <span class="badge badge-danger">{{ unread_count }}</span>
+                    {% endif %}
                     </a>
                     <a class="dropdown-item" href="{% url 'blog:blog_create' %}">写文章</a>
                     <a class="dropdown-item" href='{% url "account_logout" %}'>退出登录</a>
@@ -34,13 +45,14 @@
             </li>
             {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'account_login' %}">登录</a>
+                <a class="nav-link" href="{% url 'account_login' %}?next={{ request.path }}">登录</a>
             </li>
             {% endif %}
         </ul>
     </div>
 </nav>
 
+{% block script %}
 {% if user.is_authenticated %}
     <form
          style="display:none;"
@@ -63,3 +75,5 @@
         }
     </script>
 {% endif %}
+{% endblock script %}
+

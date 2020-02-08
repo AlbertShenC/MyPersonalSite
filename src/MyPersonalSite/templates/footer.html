@@ -1,57 +1,9 @@
 {% load staticfiles %}
-<button type="button" id="BackTop" class="toTop-arrow" style="z-index: 100;"></button>
 
-<script>
-    $(function () {
-        $('#BackTop').click(function () {
-            $('html,body').animate({scrollTop: 0}, 500);
-        });
-        $(window).scroll(function () {
-            if ($(this).scrollTop() > 300) {
-                $('#BackTop').fadeIn(300);
-            } else {
-                $('#BackTop').stop().fadeOut(300);
-            }
-        }).scroll();
-    });
-</script>
-
-<style>
-    .toTop-arrow {
-        width: 3.5rem;
-        height: 3.5rem;
-        padding: 0;
-        margin: 60px;
-        border: 0;
-        border-radius: 33%;
-        opacity: 0.7;
-        background: black;
-        cursor: pointer;
-        position: fixed;
-        right: 1.5rem;
-        bottom: 1.5rem;
-        display: none;
-    }
-    .toTop-arrow::before, .toTop-arrow::after {
-        width: 31px;
-        height: 7px;
-        border-radius: 3px;
-        background: orange;
-        position: absolute;
-        content: "";
-    }
-    .toTop-arrow::before {
-        transform: rotate(-45deg) translate(0, -50%);
-        left: 0.4rem;
-    }
-    .toTop-arrow::after {
-        transform: rotate(45deg) translate(0, -50%);
-        right: 0.4rem;
-    }
-    .toTop-arrow:focus {
-        outline: none;
-    }
-</style>
+<!--回到顶部按钮-->
+<div class="text-center" id="to-top">
+    <i class="fa fa-chevron-up" id="btn-top" title="回到顶部"></i>
+</div>
 
 <nav class="navbar navbar-dark bg-dark mb-0 fixed-bottom" id="nav-footer">
     <div class="row col-12 justify-content-center">

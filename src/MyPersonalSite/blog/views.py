@@ -36,9 +36,11 @@ def blog_list(request):
     if order == 'total_views':
         blog_list = blog_list.order_by('-total_views')
 
-    paginator = Paginator(blog_list, 3)
+    paginator = Paginator(blog_list, 9)
     page = request.GET.get('page')
     blogs = paginator.get_page(page)
+
+    columns = BlogColumn.objects.all()
 
     context = {
         'blogs': blogs,
@@ -46,6 +48,7 @@ def blog_list(request):
         'search': search,
         'column': column,
         'tag': tag,
+        'columns': columns,
     }
 
     return render(request, 'blog/list.html', context)
