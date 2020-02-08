@@ -6,7 +6,8 @@
 {% endblock title %}
 
 {% block content %}
-    <div class="container">
+<div style="background: #f0eef5">
+    <div class="container" style="background: white">
         <div class="row">
             <div class="col-9">
                 <h1 class="col-12 mt-4 mb-4">{{ blog.title }}</h1>
@@ -159,14 +160,18 @@
                 </div>
             </div>
 
-        <div class="col-3 mt-4">
-            <h4><strong>目录</strong></h4>
-            <hr>
-            <div>
-                {{ toc|safe }}
+            <div class="col-3 mt-4 sidebar" id="sidebar">
+                <div class="sidebar__inner">
+                    <h4><strong>目录</strong></h4>
+                    <hr>
+                    <div>
+                        {{ toc|safe }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
     <script>
         function confirm_delete() {
@@ -268,10 +273,28 @@
     </script>
 
     <link rel="stylesheet" href="{% static 'prism/prism.css' %}">
+    <style>
+        .sidebar{
+            will-change: min-height;
+        }
+
+        .sidebar__inner{
+            transform: translate(0, 0);
+            transform: translate3d(0, 0, 0);
+            will-change: position, transform;
+        }
+    </style>
 {% endblock content %}
 
 {% block script %}
 <script>
     $(".django-ckeditor-widget").removeAttr('style');
+</script>
+<script src="{% static 'sticky_sidebar/jquery.sticky-sidebar.min.js' %}"></script>
+<script type="text/javascript">
+    $('#sidebar').stickySidebar({
+        topSpacing: 20,
+        bottomSpacing: 20,
+    });
 </script>
 {% endblock script %}
