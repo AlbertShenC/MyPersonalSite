@@ -245,6 +245,44 @@
 
     <script src="{% static 'csrf.js' %}"></script>
     <script>
+        $(function () {
+            let storage = window.localStorage;
+            const storage_str_data = storage.getItem("my_blog_data");
+            let storage_json_data = JSON.parse(storage_str_data);
+            if (!storage_json_data) {
+                storage_json_data = {};
+            }
+            const status = check_status(storage_json_data, 'read_' + {{ blog.id }});
+            if (status) {
+                return;
+            }
+            $.ajax({
+                url: "{% url 'blog:blog_first_view' blog.id %}",
+                type: 'POST',
+                data: {},
+                success: function(result){
+                    if(result.code === 'OK'){
+                        try {
+                            storage_json_data['read_' + {{ blog.id }}] = true;
+                        } catch (e) {
+                            window.localStorage.clear();
+                        }
+                        const d = JSON.stringify(storage_json_data);
+                        try {
+                            storage.setItem("my_blog_data", d);
+                        } catch (e) {
+                            if (e.code === 22) {
+                                window.localStorage.clear();
+                                storage.setItem("my_blog_data", d);
+                            }
+                        }
+                    } else {
+                        layer.msg("与服务器通信失败..过一会儿再试试呗~");
+                    }
+                }
+            });
+        });
+
         function validate_is_like(url, id, likes) {
             let storage = window.localStorage;
             const storage_str_data = storage.getItem("my_blog_data");
@@ -252,7 +290,7 @@
             if (!storage_json_data) {
                 storage_json_data = {};
             }
-            const status = check_status(storage_json_data, id);
+            const status = check_status(storage_json_data, 'like_' + id);
             if (status) {
                 layer.msg('已经点过赞了哟~');
                 return;
@@ -265,9 +303,9 @@
                 type: 'POST',
                 data: {},
                 success: function(result){
-                    if(result === 'success'){
+                    if(result.code === 'OK'){
                         try {
-                            storage_json_data[id] = true;
+                            storage_json_data['like_' + id] = true;
                         } catch (e) {
                             window.localStorage.clear();
                         }

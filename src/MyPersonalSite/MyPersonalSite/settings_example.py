@@ -131,7 +131,7 @@ AUTHENTICATION_BACKENDS = (
 )
 # 设置站点
 SITE_ID = 1
-# 登录成功后重定向地址
+# 本地登录成功后重定向地址
 LOGIN_REDIRECT_URL = '/'
 # 注册本地账号时必须使用邮箱
 ACCOUNT_EMAIL_REQUIRED = True

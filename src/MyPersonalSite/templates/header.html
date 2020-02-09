@@ -38,9 +38,10 @@
                     <span class="badge badge-danger">{{ unread_count }}</span>
                     {% endif %}
                     </a>
-                    <a class="dropdown-item" href="{% url 'blog:blog_create' %}">写文章</a>
+                    {% if user.is_superuser %}
+                        <a class="dropdown-item" href="{% url 'blog:blog_create' %}">写文章</a>
+                    {% endif %}
                     <a class="dropdown-item" href='{% url "account_logout" %}'>退出登录</a>
-                    <a class="dropdown-item" href="#" onclick="user_delete()">删除用户</a>
                 </div>
             </li>
             {% else %}
@@ -51,29 +52,4 @@
         </ul>
     </div>
 </nav>
-
-{% block script %}
-{% if user.is_authenticated %}
-    <form
-         style="display:none;"
-         id="user_delete"
-         action="{% url 'user:user_delete' user.id %}"
-         method="POST">
-        {% csrf_token %}
-        <button type="submit">发送</button>
-    </form>
-    <script>
-        function user_delete() {
-            layer.open({
-                title: "确认删除",
-                content: "确认删除用户资料吗？",
-                yes: function(index, layero) {
-                    $('form#user_delete button').click();
-                    layer.close(index);
-                },
-            })
-        }
-    </script>
-{% endif %}
-{% endblock script %}
 
