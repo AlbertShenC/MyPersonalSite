@@ -3,7 +3,6 @@ from django.shortcuts import render
 # Create your views here.
 
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from .forms import ProfileForm
@@ -80,20 +79,6 @@ def signup_validate(request):
 
 
 @login_required(login_url='/accounts/login/')
-def user_delete(request, id):
-    if request.method == 'POST':
-        user = User.objects.get(id=id)
-        if request.user == user:
-            logout(request)
-            user.delete()
-            return redirect('blog:blog_list')
-        else:
-            return HttpResponse('你没有删除用户的权限。')
-    else:
-        return HttpResponse('请求类型不是Post。')
-
-
-@login_required(login_url='/accounts/login/')
 def profile_edit(request, id):
     user = User.objects.get(id=id)
     if Profile.objects.filter(user_id=id).exists():
@@ -103,7 +88,8 @@ def profile_edit(request, id):
 
     if request.method == 'POST':
         if request.user != user:
-            return HttpResponse('你没有权限修改此用户信息')
+            context = {'error_message': '抱歉，你没有权限修改此用户信息。'}
+            return render(request, 'error.html', context)
         profile_form = ProfileForm(request.POST, request.FILES)
         if profile_form.is_valid():
             profile_cd = profile_form.cleaned_data
@@ -114,13 +100,12 @@ def profile_edit(request, id):
             profile.save()
             return redirect('user:profile_edit', id=id)
         else:
-            return HttpResponse('输入有误，请重新输入')
-    elif request.method == 'GET':
+            context = {'error_message': '抱歉，输入有误，请重新输入。'}
+            return render(request, 'error.html', context)
+    else:
         profile_form = ProfileForm()
         context = {'profile_form': profile_form,
                    'profile': profile,
                    'user': user}
         return render(request, 'user/edit.html', context)
-    else:
-        return HttpResponse('请求类型不是Post或Get。')
 

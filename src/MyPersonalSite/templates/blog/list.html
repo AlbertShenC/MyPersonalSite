@@ -9,75 +9,63 @@
 <div class="container">
     <div class="row">
         <div class="col-12 col-lg-9">
+{#            搜索框#}
+            <form class="nav-item navbar-form mr-2 py-md-2" role="search" method="get" id="searchform" action="{% url 'blog:blog_list' %}">
+                <div class="input-group">
+                    <input type="search" name="search" class="form-control rounded-0" placeholder="搜索文章..." autocomplete="off" required=True>
+                    <div class="input-group-btn">
+                        <button class="btn btn-info rounded-0" type="submit"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
 
-            <div class="mr-auto">
-                <form class="form-inline" >
-                    <label class="sr-only">content</label>
-                    <input type="text" class="form-control mb-2 mr-sm-2" name="search"
-                        placeholder="搜索文章..." required>
-                </form>
+            <div class="text-secondary font-weight-bold py-2 f-15 choice">
+                <a class="pb-2 quiet {% if not order %}active{% endif %}"
+                   href="{% url 'blog:blog_list' %}?search={{ search }}&column={{ column }}&tag={{ tag }}">
+                    <i class="fa fa-bars mr-1"></i>时间排序</a>
+                <a class="pb-2 ml-4 quiet {% if order %}active{% endif %}"
+                   href="{% url 'blog:blog_list' %}?order=total_views&search={{ search }}&column={{ column }}&tag={{ tag }}">
+                    <i class="fa fa-fire mr-1"></i>热度排序</a>
             </div>
 
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb" style="background-color: white; padding: 0 0 0 2px; font-size: 0.9em">
-                    <li class="breadcrumb-item">
-                        <a href="{% url 'blog:blog_list' %}?search={{ search }}&column={{ column }}&tag={{ tag }}">
-                            <span style="color: dimgray">最新</span>
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="{% url 'blog:blog_list' %}?order=total_views&search={{ search }}&column={{ column }}&tag={{ tag }}">
-                            <span style="color: dimgray">最热</span>
-                        </a>
-                    </li>
-                </ol>
-            </nav>
-
             {% if search %}
-                {% if blogs %}
-                    <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
-                    <hr>
-                {% else %}
-                    <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
-                    <hr>
-                {% endif %}
+                <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+                <hr>
             {% endif %}
 
+            <div class="summary-list">
             {% for blog in blogs %}
                 <div class="card mb-2 hvr-glow" style="display: flex">
                     <div class="row no-gutters align-items-center">
                         {% if blog.avatar %}
                             <div class="col-4 d-none d-md-block" style="overflow: hidden">
-                                <img src="{{ blog.avatar.url }}" class="card-img hvr-grow"
-                                     alt="avatar"
-                                     style="transition-duration: 1s;"
-                                >
+                                <a href="{% url 'blog:blog_detail' blog.id %}">
+                                    <img src="{{ blog.avatar.url }}" class="card-img hvr-grow" alt="avatar" style="transition-duration: 1s;">
+                                </a>
                             </div>
                         {% endif %}
                         <div class="col">
                             <div class="card-body">
-                                <h4 class="mt-0">
-                                    <a href="{% url 'blog:blog_detail' blog.id %}"
-                                       class="hvr-forward no-underline"
-                                       style="font-weight: bold; color: black;">
+                                <h1 class="mt-0">
+                                    <a href="{% url 'blog:blog_detail' blog.id %}" class="hvr-forward no-underline" style="font-weight: bold; color: black;">
                                         {{ blog.title }}
                                     </a>
-                                </h4>
+                                </h1>
                                 <div class="mb-2">
                                     {% if blog.column %}
-                                        <a href="{% url 'blog:blog_list' %}?column={{ blog.column.id }}"
-                                           role="button" class="btn btn-sm hvr-pop btn-outline-secondary">
-                                            {{ blog.column }}
-                                        </a>
-                                        {% for tag in blog.tags.all %}
-                                            <a href="{% url 'blog:blog_list' %}?tag={{ tag }}"
-                                               class="badge badge-pill badge-light hvr-float-shadow"
-                                               style="color: grey"
-                                            >
-                                                {{ tag }}
-                                            </a>
-                                        {% endfor %}
+                                    <a href="{% url 'blog:blog_list' %}?column={{ blog.column.id }}"
+                                       role="button" class="btn btn-sm hvr-pop btn-outline-secondary">
+                                        {{ blog.column }}
+                                    </a>
                                     {% endif %}
+                                    {% for tag in blog.tags.all %}
+                                    <a href="{% url 'blog:blog_list' %}?tag={{ tag }}"
+                                       class="badge badge-pill badge-light hvr-float-shadow"
+                                       style="color: grey"
+                                    >
+                                        {{ tag }}
+                                    </a>
+                                    {% endfor %}
                                 </div>
                                 <div class="mb-0 text-monospace" style="color: grey;">
                                     <span>
@@ -101,38 +89,66 @@
                         </div>
                     </div>
                 </div>
+            {% empty %}
+                <div class="p-3 mt-3 bg-white"><p>暂时没有文章!</p></div>
             {% endfor %}
+            </div>
 
-            <div class="pagination row">
-                <div class="m-auto">
-                    <span class="step-links">
-                        {% if blogs.has_previous %}
-                            <a href="?page=1&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-success">&laquo; 1</a>
-                                &laquo; 1
-                            </a>
-                            <span>...</span>
-                            <a href="?page={{ blogs.previous_page_number }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-secondary">
-                                {{ blogs.previous_page_number }}
-                            </a>
-                        {% endif %}
-
-                        <span class="current btn btn-danger btn-lg">
-                            {{ blogs.number }}
-                        </span>
-
-                        {% if blogs.has_next %}
-                            <a href="?page={{ blogs.next_page_number }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-secondary">
-                                {{ blogs.next_page_number }}
-                            </a>
-                            <span>...</span>
-                            <a href="?page={{ blogs.paginator.num_pages }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-success">
-                                {{ blogs.paginator.num_pages }} &raquo;
-                            </a>
-                        {% endif %}
-                    </span>
-                </div>
+            <div class="text-center mt-2 mt-sm-1 mt-md-0 mb-3 f-16">
+                {% if blogs.has_previous %}
+                <a class="text-success" href="{% url 'blog:blog_list' %}?page=1&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}">首页</a>
+                <a class="text-success" href="{% url 'blog:blog_list' %}?page={{ blogs.previous_page_number }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}">上一页</a>
+                {% else %}
+                <span class="text-secondary" title="当前页已经是首页">上一页</span>
+                {% endif %}
+                <span class="mx-2">第&nbsp;{{ blogs.number }}&nbsp;/&nbsp;{{ blogs.paginator.num_pages }}&nbsp;页</span>
+                {% if blogs.has_next %}
+                <a class="text-success" href="{% url 'blog:blog_list' %}?page={{ blogs.next_page_number }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}">下一页</a>
+                <a class="text-success" href="{% url 'blog:blog_list' %}?page={{ blogs.paginator.num_pages }}&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}">末页</a>
+                {% else %}
+                <span class="text-secondary" title="当前页已经是末页">下一页</span>
+                {% endif %}
             </div>
         </div>
+
+        <div class="col-12 col-lg-3">
+{#            常用链接#}
+            <div class="card border-0 rounded-0 px-3 mb-2 mb-md-3" id="link-card">
+                <div class="card-header bg-white px-0">
+                    <strong><i class="fa fa-paper-plane mr-2 f-17"></i>常用链接</strong>
+                </div>
+                <div class="card-body px-0 pt-3 pb-1">
+                    <div class="row text-center">
+                        <div class="col">
+                            <a href="https://github.com/AlbertShenC" target="_blank" title="博主的Github" class="quiet">
+                                <img style="max-width:40px" alt="博主的github" src="{% static 'image/github.png' %}">
+                                <p class="mt-2">Github</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{#            文章栏目#}
+            <div class="card border-0 rounded-0 px-3 mb-2 mb-md-3" id="column-card">
+                <div class="card-header bg-white px-0">
+                    <strong><i class="fa fa-book mr-2 f-17"></i>文章栏目</strong>
+                </div>
+                <ul class="list-group list-group-flush f-16">
+                    <li class="list-group-item d-flex justify-content-between align-items-center pr-2 py-2">
+                        <a class="category-item quiet" href="{% url 'blog:blog_list' %}"
+                           title="查看所有文章">所有</a>
+                    </li>
+                    {% for single_column in columns %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center pr-2 py-2">
+                        <a class="category-item quiet" href="{% url 'blog:blog_list' %}?column={{ single_column.id }}"
+                           title="查看【{{ single_column.title }}】栏目下所有文章">{{ single_column.title }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock content %}

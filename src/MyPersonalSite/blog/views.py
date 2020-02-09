@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
@@ -12,61 +12,76 @@ import markdown
 
 
 def blog_list(request):
-    search = request.GET.get('search')
-    order = request.GET.get('order')
-    column = request.GET.get('column')
-    tag = request.GET.get('tag')
+    if request.method == 'GET':
+        search = request.GET.get('search')
+        order = request.GET.get('order')
+        column = request.GET.get('column')
+        tag = request.GET.get('tag')
+        blog_list = BlogPost.objects.all()
 
-    blog_list = BlogPost.objects.all()
+        if search:
+            blog_list = blog_list.filter(
+                Q(title__icontains=search) |
+                Q(body__icontains=search)
+            )
+        else:
+            search = ''
 
-    if search:
-        blog_list = blog_list.filter(
-            Q(title__icontains=search) |
-            Q(body__icontains=search)
-        )
+        if column is not None and column.isdigit():
+            blog_list = blog_list.filter(column=column)
+
+        if tag and tag != 'None':
+            blog_list = blog_list.filter(tags__name__in=[tag])
+
+        if order == 'total_views':
+            blog_list = blog_list.order_by('-total_views')
+
+        paginator = Paginator(blog_list, 9)
+        page = request.GET.get('page')
+        blogs = paginator.get_page(page)
+        columns = BlogColumn.objects.all()
+        context = {'blogs': blogs, 'order': order, 'search': search, 'column': column,
+                   'tag': tag, 'columns': columns}
+        return render(request, 'blog/list.html', context)
     else:
-        search = ''
-
-    if column is not None and column.isdigit():
-        blog_list = blog_list.filter(column=column)
-
-    if tag and tag != 'None':
-        blog_list = blog_list.filter(tags__name__in=[tag])
-
-    if order == 'total_views':
-        blog_list = blog_list.order_by('-total_views')
-
-    paginator = Paginator(blog_list, 3)
-    page = request.GET.get('page')
-    blogs = paginator.get_page(page)
-
-    context = {
-        'blogs': blogs,
-        'order': order,
-        'search': search,
-        'column': column,
-        'tag': tag,
-    }
-
-    return render(request, 'blog/list.html', context)
+        context = {'error_message': '仅支持GET请求'}
+        return render(request, 'error.html', context)
 
 
 def blog_detail(request, blog_id):
-    blog = BlogPost.objects.get(id=blog_id)
-    comments = Comment.objects.filter(Blog=blog_id)
-    blog.total_views += 1
-    blog.save(update_fields=['total_views'])
-    md = markdown.Markdown(
-        extensions=[
-            'markdown.extensions.extra',
-            'markdown.extensions.codehilite',
-            'markdown.extensions.toc',
-        ]
-    )
-    blog.body = md.convert(blog.body)
-    comment_form = CommentForm()
-    context = {'blog': blog, 'toc': md.toc, 'comments': comments, 'comment_form': comment_form}
-    return render(request, 'blog/detail.html', context)
+    if request.method == 'GET':
+        blog = BlogPost.objects.get(id=blog_id)
+        comments = Comment.objects.filter(Blog=blog_id)
+        blog.save(update_fields=['total_views'])
+        md = markdown.Markdown(
+            extensions=[
+                'markdown.extensions.extra',
+                'markdown.extensions.codehilite',
+                'markdown.extensions.toc',
+            ]
+        )
+        blog.body = md.convert(blog.body)
+        comment_form = CommentForm()
+        context = {'blog': blog, 'toc': md.toc, 'comments': comments, 'comment_form': comment_form}
+        return render(request, 'blog/detail.html', context)
+    else:
+        context = {'error_message': '仅支持GET请求'}
+        return render(request, 'error.html', context)
+
+
+def blog_first_view(request, blog_id):
+    if request.method == 'POST':
+        blog = BlogPost.objects.get(id=blog_id)
+        blog.total_views += 1
+        blog.save()
+        return JsonResponse({
+            'code': 'OK'
+        })
+    else:
+        return JsonResponse({
+            'code': 'ERROR',
+            'message': '为安全起见，仅支持POST请求'
+        })
 
 
 def blog_like(request, blog_id):
@@ -74,13 +89,21 @@ def blog_like(request, blog_id):
         blog = BlogPost.objects.get(id=blog_id)
         blog.likes += 1
         blog.save()
-        return HttpResponse('success')
+        return JsonResponse({
+            'code': 'OK'
+        })
     else:
-        return HttpResponse('仅支持POST请求')
+        return JsonResponse({
+            'code': 'ERROR',
+            'message': '为安全起见，仅支持POST请求'
+        })
 
 
 @login_required(login_url='/accounts/login/')
 def blog_create(request):
+    if not request.user.is_superuser:
+        context = {'error_message': '抱歉，您无权发表文章，若有需求，请联系管理员'}
+        return render(request, 'error.html', context)
     if request.method == 'POST':
         blog_post_form = BlogPostForm(request.POST, request.FILES)
         if blog_post_form.is_valid():
@@ -92,7 +115,8 @@ def blog_create(request):
             blog_post_form.save_m2m()
             return redirect('blog:blog_list')
         else:
-            return HttpResponse('表单内容有误，请重新填写。')
+            context = {'error_message': '表单内容有误，请重新填写'}
+            return render(request, 'error.html', context)
     else:
         blog_post_form = BlogPostForm()
         columns = BlogColumn.objects.all()
@@ -105,7 +129,8 @@ def blog_update(request, blog_id):
     blog = BlogPost.objects.get(id=blog_id)
 
     if request.user != blog.author:
-        return HttpResponse("抱歉，你无权修改这篇文章。")
+        context = {'error_message': '抱歉，你无权修改这篇文章。'}
+        return render(request, 'error.html', context)
 
     if request.method == 'POST':
         blog_post_form = BlogPostForm(data=request.POST)
@@ -124,7 +149,8 @@ def blog_update(request, blog_id):
             blog.save()
             return redirect('blog:blog_detail', blog_id)
         else:
-            return HttpResponse('表单内容有误，请重新填写。')
+            context = {'error_message': '表单内容有误，请重新填写'}
+            return render(request, 'error.html', context)
     else:
         blog_post_form = BlogPostForm()
         columns = BlogColumn.objects.all()
@@ -142,8 +168,10 @@ def blog_delete(request, blog_id):
     if request.method == 'POST':
         blog = BlogPost.objects.get(id=blog_id)
         if request.user != blog.author:
-            return HttpResponse("抱歉，你无权删除这篇文章。")
+            context = {'error_message': '抱歉，你无权删除这篇文章。'}
+            return render(request, 'error.html', context)
         blog.delete()
         return redirect('blog:blog_list')
     else:
-        return HttpResponse("仅允许post请求")
+        context = {'error_message': '为安全起见，仅允许POST请求'}
+        return render(request, 'error.html', context)

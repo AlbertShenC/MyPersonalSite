@@ -6,166 +6,195 @@
 {% endblock title %}
 
 {% block content %}
-<div style="background: #f0eef5">
-    <div class="container" style="background: white">
-        <div class="row">
-            <div class="col-9">
-                <h1 class="col-12 mt-4 mb-4">{{ blog.title }}</h1>
-                <div class="col-12 alert alert-success">作者：{{ blog.author }}
-                    {% if user == blog.author %}
-                        · <a href="#" onclick="confirm_delete()">删除文章</a>
-                        · <a href="{% url 'blog:blog_update' blog.id %}">修改文章</a>
-                    {% endif %}
-                    <div>
-                        浏览：{{ blog.total_views }}
-                    </div>
-                    <form style="display:none;" id="delete"
-                          action="{% url 'blog:blog_delete' blog.id %}" method="POST">
-                        {% csrf_token %}
-                        <button type="submit">发送</button>
-                    </form>
-                </div>
-                <div class="col-12">
-                    <p>{{ blog.body|safe }}</p>
-                </div>
-                <hr>
-
-                <div style="text-align:center;" class="mt-4">
-                    <button class="btn btn-outline-danger"
-                            type="button"
-                            onclick="validate_is_like(
-                                     '{% url 'blog:blog_like' blog.id %}',
-                                     {{ blog.id }},
-                                     {{ blog.likes }}
-                                     )"
-                            >
-                        <span>点赞</span>
-                        <span>
-                            <i class="fas fa-heart"></i>
-                        </span>
-                        <span id="likes_number">
-                            {{ blog.likes }}
-                        </span>
-                    </button>
-                </div>
-
-                {% if user.is_authenticated %}
-                    <div>
-                        <form action="{% url 'comment:post_comment' blog.id %}" method="POST">
-                        {% csrf_token %}
-                            <div class="form-group">
-                                <label for="body">
-                                    <strong>我也要发言：</strong>
-                                </label>
-                                <div>
-                                    {{ comment_form.media }}
-                                    {{ comment_form.body }}
-                                </div>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-lg-9">
+            <div class="summary-list">
+                <div class="card mb-2 hvr-glow" style="display: flex">
+                    <div class="row no-gutters align-items-center">
+                        <div class="card-body">
+{#                            标题#}
+                            <h1 class="col-12 text-center text-info font-weight-bold" style="font-size: 35px">{{ blog.title }}</h1>
+                            <hr>
+{#                            附加信息#}
+                            <p class="text-center text-muted">
+                                {{ blog.author }}撰写 · {{ blog.total_views }}阅读 · {{ blog.created|date:'Y-m-d' }}发布
+                            </p>
+                            <div>
+                                {% if user == blog.author %}
+                                    · <a href="#" onclick="confirm_delete()">删除文章</a>
+                                    · <a href="{% url 'blog:blog_update' blog.id %}">修改文章</a>
+                                {% endif %}
+                                <form style="display:none;" id="delete"
+                                      action="{% url 'blog:blog_delete' blog.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit">发送</button>
+                                </form>
                             </div>
-                            <button type="submit" class="btn btn-primary ">发送</button>
-                        </form>
-                    </div>
-                    <br>
-                {% else %}
-                    <br>
-                    <h5 class="row justify-content-center">
-                        请<a href="{% url 'account_login' %}">登录</a>后回复
-                    </h5>
-                    <br>
-                {% endif %}
-
-                {% load mptt_tags %}
-                <h4>共有{{ comments.count }}条评论</h4>
-                <div class="row">
-                    {% recursetree comments %}
-                        {% with comment=node %}
-                            <div class="{% if comment.reply_to %}
-                                        offset-1 col-11
-                                        {% else %}
-                                        col-12
-                                        {% endif %}"
-                                 id="comment_elem_{{ comment.id }}"
-                            >
-                                <hr>
-                                <p>
-                                    <strong style="color: pink">
-                                        {{ comment.user }}
-                                    </strong>
-
-                                    {% if comment.reply_to %}
-                                        <i class="far fa-arrow-alt-circle-right"
-                                           style="color: cornflowerblue;"
+{#                            正文#}
+                            <div class="col-12">
+                                <p>{{ blog.body|safe }}</p>
+                            </div>
+{#                            说明#}
+                            <blockquote class="p-1 f-14" style="border-left: 4px solid #dc3545;">
+                                <p class="m-1"><strong>版权声明：</strong>如无特殊说明，文章均为本站原创，转载请注明出处</p>
+                            </blockquote>
+{#                            点赞#}
+                            <div style="text-align:center;" class="mt-4">
+                                <button class="btn btn-outline-danger"
+                                        type="button"
+                                        onclick="validate_is_like(
+                                                 '{% url 'blog:blog_like' blog.id %}',
+                                                 {{ blog.id }},
+                                                 {{ blog.likes }}
+                                                 )"
                                         >
-                                            ->
-                                        </i>
-                                        <strong style="color: pink">
-                                            {{ comment.reply_to }}
-                                        </strong>
-                                    {% endif %}
-
-                                </p>
-                                <div>{{ comment.body|safe }}</div>
-
-                                <div>
-                                    <span style="color: gray">
-                                        {{ comment.created|date:"Y-m-d H:i" }}
+                                    <span>点赞</span>
+                                    <span>
+                                        <i class="fas fa-heart"></i>
                                     </span>
-
-                                    <!-- 加载 modal 的按钮 -->
-                                    {% if user.is_authenticated %}
-                                    <button type="button"
-                                            class="btn btn-light btn-sm text-muted"
-                                            onclick="load_modal({{ blog.id }}, {{ comment.id }})"
-                                            >
-                                        回复
-                                    </button>
-                                    {% else %}
-                                    <a class="btn btn-light btn-sm text-muted"
-                                       href="{% url 'account_login' %}"
-                                       >
-                                        回复
-                                    </a>
-                                    {% endif %}
+                                    <span id="likes_number">
+                                        {{ blog.likes }}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+{#                发表评论#}
+                <div class="card mb-2 hvr-glow" style="display: flex">
+                    <div class="row no-gutters align-items-center">
+                        <div class="card-body">
+                            {% if user.is_authenticated %}
+                                <form action="{% url 'comment:post_comment' blog.id %}" method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="body">
+                                        <strong>我也要发言：</strong>
+                                    </label>
+                                    <div>
+                                        {{ comment_form.media }}
+                                        {{ comment_form.body }}
+                                    </div>
                                 </div>
+                                <button type="submit" class="btn btn-info ">提交评论</button>
+                                </form>
+                            <br>
+                        {% else %}
+                            <br>
+                            <h5 class="row justify-content-center">
+                                请<a href="{% url 'account_login' %}">登录</a>后回复
+                            </h5>
+                            <br>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+{#                评论区#}
+                <div class="card mb-2 hvr-glow" style="display: flex">
+                    <div class="row no-gutters align-items-center">
+                        <div class="card-body">
+                            {% load mptt_tags %}
+                            <h4>共有{{ comments.count }}条评论</h4>
+                            <div class="row">
+                                {% recursetree comments %}
+                                    {% with comment=node %}
+                                        <div class="{% if comment.reply_to %}
+                                                    offset-1 col-11
+                                                    {% else %}
+                                                    col-12
+                                                    {% endif %}"
+                                             id="comment_elem_{{ comment.id }}"
+                                        >
+                                            <hr>
+                                            <p>
+                                                <strong style="color: pink">
+                                                    {{ comment.user }}
+                                                </strong>
 
-                                <!-- Modal -->
-                                <div class="modal fade"
-                                     id="comment_{{ comment.id }}"
-                                     tabindex="-1"
-                                     role="dialog"
-                                     aria-labelledby="CommentModalCenter"
-                                     aria-hidden="true"
-                                >
-                                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                        <div class="modal-content" style="height: 480px">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalCenterTitle">回复 {{ comment.user }}：</h5>
+                                                {% if comment.reply_to %}
+                                                    <i class="far fa-arrow-alt-circle-right"
+                                                       style="color: cornflowerblue;"
+                                                    >
+                                                    </i>
+                                                    <strong style="color: pink">
+                                                        {{ comment.reply_to }}
+                                                    </strong>
+                                                {% endif %}
+
+                                            </p>
+                                            <div>{{ comment.body|safe }}</div>
+
+                                            <div>
+                                                <span style="color: gray">
+                                                    {{ comment.created|date:"Y-m-d H:i" }}
+                                                </span>
+
+                                                <!-- 加载 modal 的按钮 -->
+                                                {% if user.is_authenticated %}
+                                                <button type="button"
+                                                        class="btn btn-light btn-sm text-muted"
+                                                        onclick="load_modal({{ blog.id }}, {{ comment.id }})"
+                                                        >
+                                                    回复
+                                                </button>
+                                                {% else %}
+                                                <a class="btn btn-light btn-sm text-muted"
+                                                   href="{% url 'account_login' %}"
+                                                   >
+                                                    回复
+                                                </a>
+                                                {% endif %}
                                             </div>
-                                            <div class="modal-body" id="modal_body_{{ comment.id }}"></div>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade"
+                                                 id="comment_{{ comment.id }}"
+                                                 tabindex="-1"
+                                                 role="dialog"
+                                                 aria-labelledby="CommentModalCenter"
+                                                 aria-hidden="true"
+                                            >
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                    <div class="modal-content" style="height: 480px">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalCenterTitle">回复 {{ comment.user }}：</h5>
+                                                        </div>
+                                                        <div class="modal-body" id="modal_body_{{ comment.id }}"></div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            {% if not comment.is_leaf_node %}
+                                                <div class="children">
+                                                    {{ children }}
+                                                </div>
+                                            {% endif %}
                                         </div>
 
-                                    </div>
-                                </div>
 
-                                {% if not comment.is_leaf_node %}
-                                    <div class="children">
-                                        {{ children }}
-                                    </div>
-                                {% endif %}
+                                    {% endwith %}
+                                {% endrecursetree %}
                             </div>
-
-
-                        {% endwith %}
-                    {% endrecursetree %}
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-3 mt-4 sidebar" id="sidebar">
-                <div class="sidebar__inner">
-                    <h4><strong>目录</strong></h4>
-                    <hr>
-                    <div>
-                        {{ toc|safe }}
+        <div class="col-12 col-lg-3 mt-4 sidebar d-none d-lg-block" id="sidebar">
+            <div class="sidebar__inner">
+                <br><br>
+                <div class="card mb-2 hvr-glow" style="display: flex">
+                    <div class="row no-gutters align-items-center">
+                        <div class="card-body">
+                            <h4><strong>目录</strong></h4>
+                            <hr>
+                            <div>
+                                {{ toc|safe }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -216,6 +245,44 @@
 
     <script src="{% static 'csrf.js' %}"></script>
     <script>
+        $(function () {
+            let storage = window.localStorage;
+            const storage_str_data = storage.getItem("my_blog_data");
+            let storage_json_data = JSON.parse(storage_str_data);
+            if (!storage_json_data) {
+                storage_json_data = {};
+            }
+            const status = check_status(storage_json_data, 'read_' + {{ blog.id }});
+            if (status) {
+                return;
+            }
+            $.ajax({
+                url: "{% url 'blog:blog_first_view' blog.id %}",
+                type: 'POST',
+                data: {},
+                success: function(result){
+                    if(result.code === 'OK'){
+                        try {
+                            storage_json_data['read_' + {{ blog.id }}] = true;
+                        } catch (e) {
+                            window.localStorage.clear();
+                        }
+                        const d = JSON.stringify(storage_json_data);
+                        try {
+                            storage.setItem("my_blog_data", d);
+                        } catch (e) {
+                            if (e.code === 22) {
+                                window.localStorage.clear();
+                                storage.setItem("my_blog_data", d);
+                            }
+                        }
+                    } else {
+                        layer.msg("与服务器通信失败..过一会儿再试试呗~");
+                    }
+                }
+            });
+        });
+
         function validate_is_like(url, id, likes) {
             let storage = window.localStorage;
             const storage_str_data = storage.getItem("my_blog_data");
@@ -223,7 +290,7 @@
             if (!storage_json_data) {
                 storage_json_data = {};
             }
-            const status = check_status(storage_json_data, id);
+            const status = check_status(storage_json_data, 'like_' + id);
             if (status) {
                 layer.msg('已经点过赞了哟~');
                 return;
@@ -236,9 +303,9 @@
                 type: 'POST',
                 data: {},
                 success: function(result){
-                    if(result === 'success'){
+                    if(result.code === 'OK'){
                         try {
-                            storage_json_data[id] = true;
+                            storage_json_data['like_' + id] = true;
                         } catch (e) {
                             window.localStorage.clear();
                         }
