@@ -32,7 +32,7 @@ class BlogPost(models.Model):
 
     tags = TaggableManager(blank=True)
 
-    avatar = models.ImageField(upload_to='blog/%Y%m%d/', blank=True)
+    avatar = models.ImageField(upload_to='blog/%Y%m%d/avatar/', blank=True)
 
     def save(self, *args, **kwargs):
         blog = super(BlogPost, self).save(*args, **kwargs)

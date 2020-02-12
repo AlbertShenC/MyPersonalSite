@@ -15,4 +15,5 @@ urlpatterns = [
     path('update/<int:blog_id>/', views.blog_update, name='blog_update'),
     path('like/<int:blog_id>/', views.blog_like, name='blog_like'),
     path('first_view/<int:blog_id>/', views.blog_first_view, name='blog_first_view'),
+    path('blog_add_picture/', views.blog_add_picture, name='blog_add_picture'),
 ]
