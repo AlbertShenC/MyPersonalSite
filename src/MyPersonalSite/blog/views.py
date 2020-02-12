@@ -8,7 +8,10 @@ from .forms import BlogPostForm
 from .models import *
 from comment.models import Comment
 from comment.forms import CommentForm
+from MyPersonalSite.settings import MEDIA_ROOT
 import markdown
+import os, time
+from PIL import Image
 
 
 def blog_list(request):
@@ -175,3 +178,38 @@ def blog_delete(request, blog_id):
     else:
         context = {'error_message': '为安全起见，仅允许POST请求'}
         return render(request, 'error.html', context)
+
+
+@login_required(login_url='/accounts/login/')
+def blog_add_picture(request):
+    if not request.user.is_superuser:
+        return HttpResponse('抱歉，您无权上传图片，若有需求，请联系管理员')
+
+    if request.method == 'POST':
+        img = request.FILES.get('img')
+        time_path = time.strftime('%Y%m%d', time.localtime())
+        blog_all_picture_path = os.path.join(MEDIA_ROOT + 'blog/', time_path)
+        if not os.path.exists(blog_all_picture_path):
+            os.mkdir(blog_all_picture_path)
+        path = os.path.join(blog_all_picture_path, 'picture/')
+        if not os.path.exists(path):
+            os.mkdir(path)
+        img_name = os.path.join(path, img.name)
+        with open(img_name, 'wb') as ff:
+            for c in img.chunks():
+                ff.write(c)
+
+        image = Image.open(img_name)
+        (x, y) = image.size
+        if x > 400:
+            new_x = 400
+            new_y = int(new_x * (y / x))
+            resized_image = image.resize((new_x, new_y), Image.ANTIALIAS)
+            resized_image.save(img_name)
+
+        img_url = '/media/blog/' + time_path + '/picture/' + img.name
+        return HttpResponse("![](" + img_url + ")")
+    elif request.method == 'GET':
+        return render(request, 'blog/add_picture.html')
+    else:
+        return HttpResponse('仅支持GET和POST请求')

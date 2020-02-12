@@ -1,0 +1,28 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+
+<body>
+    <form method="post" action="." enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="img">图片</label>
+            <input type="file" class="form-control-file" name="img" id="img">
+        </div>
+        <button type="submit" class="btn btn-primary">完成</button>
+    </form>
+
+    <script src="{% static 'jquery/jquery.js' %}"></script>
+    <script src="{% static 'popper/popper.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- csrf token -->
+    <script src="{% static 'csrf.js' %}"></script>
+
+</body>
+</html>
