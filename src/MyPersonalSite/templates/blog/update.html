@@ -1,5 +1,12 @@
-{% extends "base.html" %} {% load staticfiles %}
-{% block title %} 更新文章 {% endblock title %}
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}
+    {% if blog.title %}
+        更新文章_{{ blog.title }}_Albert 的个人网站
+    {% else %}
+        新建文章_Albert 的个人网站
+    {% endif %}
+{% endblock title %}
 {% block content %}
 <div class="container">
     <div class="row">

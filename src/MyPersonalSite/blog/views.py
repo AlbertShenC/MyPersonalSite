@@ -124,7 +124,7 @@ def blog_create(request):
         blog_post_form = BlogPostForm()
         columns = BlogColumn.objects.all()
         context = {'blog_post_form': blog_post_form, 'columns': columns}
-        return render(request, 'blog/create.html', context)
+        return render(request, 'blog/update.html', context)
 
 
 @login_required(login_url='/accounts/login/')
@@ -208,7 +208,10 @@ def blog_add_picture(request):
             resized_image.save(img_name)
 
         img_url = '/media/blog/' + time_path + '/picture/' + img.name
-        return HttpResponse("![](" + img_url + ")")
+        context = {
+            'copy_context': "![](" + img_url + ")"
+        }
+        return render(request, 'blog/copy_context.html', context)
     elif request.method == 'GET':
         return render(request, 'blog/add_picture.html')
     else:
