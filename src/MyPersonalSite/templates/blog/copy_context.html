@@ -1,0 +1,30 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+
+<body>
+    <p>链接已自动复制：{{ copy_context }}</p>
+    <input type="text" id="copy_context" value="{{ copy_context }}" style="position: absolute; top: 0; left: 0; opacity: 0; z-index: -10;">
+
+    <script src="{% static 'jquery/jquery.js' %}"></script>
+    <script src="{% static 'popper/popper.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- csrf token -->
+    <script src="{% static 'csrf.js' %}"></script>
+
+    <script>
+        $(function () {
+            let copy_context = $('#copy_context');
+            copy_context.select();
+            document.execCommand("Copy");
+        })
+    </script>
+
+</body>
+</html>
